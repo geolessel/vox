@@ -39,7 +39,23 @@ For example, if I have a file named `site/blog/posts/2023/hello-world.html.eex` 
 
 ### Template file
 
-For now, **you must have a `src_dir/_template.html.eex` file defined.
+For now, **you must have a `src_dir/_template.html.eex` file defined**.
+The compiler will use that file as the default template.
+There are two other ways you can set the template for a file.
+
+1. Bind `template` in the file's bindings. This is a path relative to the file it is bound in.
+
+   ```elixir
+   <%
+     title = "Special post"
+     template = "_special_template.html.eex"
+   %>
+   ```
+
+2. Change the default of an entire subdirectory by creating a new `_template.html.eex` in it.
+When the file is compiled, it will automatically look in its current directory for a `_template.html.eex` file and us that if it exists.
+If it does not exist, it will search in the parent directory... and so on until it reaches `src_dir/_template.html.eex`
+
 Use `<%= inner_content %>` inside this file to render the content of other files.
 
 ### File metadata (bindings)

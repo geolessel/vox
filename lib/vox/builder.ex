@@ -5,9 +5,5 @@ defmodule Vox.Builder do
     Vox.Builder.FileCompiler.compile()
 
     Vox.Builder.FileWriter.write()
-    |> IO.inspect()
-
-    # Vox.Builder.Collection.inspect()
-    # |> IO.inspect()
   end
 end
