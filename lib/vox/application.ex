@@ -5,9 +5,7 @@ defmodule Vox.Application do
 
   @impl true
   def start(_type, _args) do
-    children = [
-      {Bandit, plug: Vox.Dev.Server}
-    ]
+    children = []
 
     opts = [strategy: :one_for_one, name: Vox.Supervisor]
     Supervisor.start_link(children, opts)

@@ -1,3 +1,3 @@
 defmodule Vox.ProcessedFile do
-  defstruct content: "", bindings: %{}
+  defstruct content: "", bindings: %{}, path: "", template: ""
 end
