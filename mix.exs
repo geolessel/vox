@@ -7,7 +7,8 @@ defmodule Vox.MixProject do
       version: "0.1.0",
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      package: package()
     ]
   end
 
@@ -28,5 +29,13 @@ defmodule Vox.MixProject do
       {:bandit, "~> 0.6"},
       {:file_system, "~> 0.2"}
     ]
+  end
+
+  defp package do
+    %{
+      description: "Static site builder for Elixir lovers",
+      licenses: ["MIT"],
+      links: %{"GitHub" => "https://github.com/geolessel/vox"}
+    }
   end
 end
