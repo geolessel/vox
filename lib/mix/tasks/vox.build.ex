@@ -3,6 +3,8 @@ defmodule Mix.Tasks.Vox.Build do
 
   use Mix.Task
 
+  @requirements ["app.start"]
+
   @impl Mix.Task
   def run(_args) do
     Vox.Builder.build()

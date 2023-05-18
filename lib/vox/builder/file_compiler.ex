@@ -45,7 +45,9 @@ defmodule Vox.Builder.FileCompiler do
   defp compute_bindings(files) do
     Enum.map(files, fn file ->
       {_content, bindings} =
-        Code.eval_quoted(file.compiled, [assigns: [collection: Vox.Builder.Collection]], __ENV__)
+        Code.eval_quoted(file.compiled,
+          assigns: [collection: Vox.Builder.Collection]
+        )
 
       %{file | bindings: bindings}
     end)
