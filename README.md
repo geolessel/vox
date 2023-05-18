@@ -68,9 +68,7 @@ For example, `<% title = "hello world" %>` in a file can be referenced from `<%=
 One special metadata (binding) you can use is `collection`.
 This will put the file in a special collection you can reference later in your templates or other `.eex` files.
 
-There is a `@collection` assign you can use in your `.eex` files that contains information about all the other files in your site.
-You can use `@collection.list_collection/1` to get all the files that belong in the specified collection.
-
+There will be an assign for every collection value you bind in your `.eex` files.
 For example, consider the following two files.
 First is a blog post specifying it belongs in the `:posts` and `:elixir` collections.
 
@@ -87,12 +85,13 @@ First is a blog post specifying it belongs in the `:posts` and `:elixir` collect
 ```
 
 Second is an index page listing out all the blog posts and links to their pages.
+The `@posts` and `@elixir` are already bound and ready to use because they were indicated in one or more `collections`.
 
 ```elixir
 <h1>Here are all my blog posts</h1>
 
 <ul>
-  <%= for post <- @collection.list_collection(:posts) do %>
+  <%= for post <- @posts do %>
     <li>
       <a href="<%= post.destination_path %>"><%= post.bindings[:title] %></a>
     </li>

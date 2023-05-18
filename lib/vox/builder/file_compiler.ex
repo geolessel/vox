@@ -3,6 +3,7 @@ defmodule Vox.Builder.FileCompiler do
 
   defmodule File do
     defstruct bindings: [],
+              collections: [],
               compiled: nil,
               content: "",
               destination_path: "",
@@ -15,6 +16,7 @@ defmodule Vox.Builder.FileCompiler do
   def compile() do
     Vox.Builder.Collection.list_files()
     |> compile_files()
+    |> compute_collections()
     |> compute_bindings()
     |> add_to_collection(:compiled)
     |> eval_files()
@@ -42,12 +44,30 @@ defmodule Vox.Builder.FileCompiler do
     end)
   end
 
+  defp compute_collections(files) do
+    Enum.map(files, fn file ->
+      collections =
+        file.compiled
+        |> Macro.prewalker()
+        |> Enum.map(& &1)
+        |> Enum.reduce([], fn
+          {:=, _line, [{:collections, _collections_line, _nil}, collections]}, acc ->
+            collections = List.wrap(collections)
+            Vox.Builder.Collection.add_collections(collections)
+            collections ++ acc
+
+          _other, acc ->
+            acc
+        end)
+
+      %{file | collections: collections}
+    end)
+  end
+
   defp compute_bindings(files) do
     Enum.map(files, fn file ->
       {_content, bindings} =
-        Code.eval_quoted(file.compiled,
-          assigns: [collection: Vox.Builder.Collection]
-        )
+        Code.eval_quoted(file.compiled, assigns: Vox.Builder.Collection.assigns())
 
       %{file | bindings: bindings}
     end)
@@ -61,7 +81,7 @@ defmodule Vox.Builder.FileCompiler do
   defp eval_files(files) do
     Enum.map(files, fn %File{compiled: compiled} = file ->
       {content, _bindings} =
-        Code.eval_quoted(compiled, [assigns: [collection: Vox.Builder.Collection]], __ENV__)
+        Code.eval_quoted(compiled, [assigns: Vox.Builder.Collection.assigns()], __ENV__)
 
       %{file | content: String.trim(content)}
     end)
