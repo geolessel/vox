@@ -107,6 +107,21 @@ The `@posts` and `@elixir` are already bound and ready to use because they were 
 </ul>
 ```
 
+### Partials
+
+If you have a bit of code or markup that is reused often in your site, it might be beneficial to put it into a partial.
+**For now, partials cannot access assigns or other variables.**
+
+To render the contents of a partial file, use the **Vox.partial/1** function passing the full path of the file from your source directory.
+
+For example, if you specified your source directory as `my-blog` and you had a partial file located on your filesystem at `my-blog/partials/copyright.html`, you would insert it into an EEx file like...
+
+```elixir
+<%= Vox.partial("/partials/copyright.html") %>
+```
+
+Note that it is important to pass the initial slash `/` in the path.
+
 
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
