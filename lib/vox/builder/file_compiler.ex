@@ -9,7 +9,8 @@ defmodule Vox.Builder.FileCompiler do
               destination_path: "",
               final: "",
               source_path: "",
-              template: ""
+              template: "",
+              type: nil
   end
 
   @spec compile() :: []
@@ -27,20 +28,34 @@ defmodule Vox.Builder.FileCompiler do
   end
 
   defp compile_files(paths) do
-    Enum.map(paths, fn path ->
-      compiled = EEx.compile_file(path)
+    Enum.reduce(paths, [], fn path, acc ->
+      case Path.extname(path) do
+        # TODO: handle non-.eex evaled files
+        ".eex" ->
+          compiled = EEx.compile_file(path)
 
-      destination_path =
-        path
-        # TODO: handle non-.eex files
-        |> Path.rootname(".eex")
-        |> String.trim_leading(Application.get_env(:vox, :src_dir) <> "/")
+          destination_path =
+            path
+            |> Path.rootname(".eex")
+            |> String.trim_leading(Application.get_env(:vox, :src_dir) <> "/")
 
-      %File{
-        compiled: compiled,
-        source_path: path,
-        destination_path: destination_path
-      }
+          [
+            %File{
+              compiled: compiled,
+              source_path: path,
+              destination_path: destination_path,
+              type: :evaled
+            }
+            | acc
+          ]
+
+        "" ->
+          acc
+
+        _ext_of_passthrough ->
+          destination_path = String.trim_leading(path, Application.get_env(:vox, :src_dir) <> "/")
+          [%File{source_path: path, destination_path: destination_path, type: :passthrough} | acc]
+      end
     end)
   end
 
@@ -79,33 +94,43 @@ defmodule Vox.Builder.FileCompiler do
   end
 
   defp eval_files(files) do
-    Enum.map(files, fn %File{compiled: compiled} = file ->
-      {content, _bindings} =
-        Code.eval_quoted(compiled, [assigns: Vox.Builder.Collection.assigns()], __ENV__)
+    Enum.map(files, fn
+      %File{type: :passthrough} = file ->
+        file
 
-      %{file | content: String.trim(content)}
+      %File{compiled: compiled, type: :evaled} = file ->
+        {content, _bindings} =
+          Code.eval_quoted(compiled, [assigns: Vox.Builder.Collection.assigns()], __ENV__)
+
+        %{file | content: String.trim(content)}
     end)
   end
 
   defp insert_into_template(files) do
-    Enum.map(files, fn %File{content: content, template: template} = file ->
-      assigns =
-        file.bindings
-        |> Enum.filter(fn
-          {{_, EEx.Engine}, _} -> false
-          _ -> true
-        end)
-        |> Enum.into(Keyword.new())
-        |> Keyword.merge(inner_content: content)
+    Enum.map(files, fn
+      %File{type: :passthrough} = file ->
+        file
 
-      final = EEx.eval_file(template, assigns: assigns)
-      %{file | final: final}
+      %File{content: content, template: template} = file ->
+        assigns =
+          file.bindings
+          |> Enum.filter(fn
+            {{_, EEx.Engine}, _} -> false
+            _ -> true
+          end)
+          |> Enum.into(Keyword.new())
+          |> Keyword.merge(inner_content: content)
+
+        final = EEx.eval_file(template, assigns: assigns)
+        %{file | final: final}
     end)
   end
 
   def put_nearest_template(files) when is_list(files) do
     Enum.map(files, &put_nearest_template/1)
   end
+
+  def put_nearest_template(%File{type: :passthrought} = file), do: file
 
   def put_nearest_template(%File{source_path: path, bindings: bindings} = file) do
     template =

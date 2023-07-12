@@ -53,10 +53,18 @@ There are two other ways you can set the template for a file.
    ```
 
 2. Change the default of an entire subdirectory by creating a new `_template.html.eex` in it.
-When the file is compiled, it will automatically look in its current directory for a `_template.html.eex` file and us that if it exists.
+When a file is compiled, it will automatically look in its current directory for a `_template.html.eex` file and us that if it exists.
 If it does not exist, it will search in the parent directory... and so on until it reaches `src_dir/_template.html.eex`
 
 Use `<%= inner_content %>` inside this file to render the content of other files.
+
+### Passthrough files
+
+There are some files that need to be included in a site's build but should not be processed (like images, fonts, and other assets).
+Any file with an extension other than `.eex` or `.html` will not be processed.
+Instead, they will be copied over in the same directory structure and file name as it is in the source directory.
+
+For example, if there was an image located on your filesystem at `src_dir/images/logo.png`, it will be available in the generated site structure are `dest_dir/images/logo.png`.
 
 ### File metadata (bindings)
 

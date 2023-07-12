@@ -6,9 +6,7 @@ defmodule Vox.Builder.FileFinder do
   end
 
   def find(root_dir) do
-    extensions = Enum.join(["eex", "html"], ",")
-
-    [root_dir, "**", "*.{#{extensions}}"]
+    [root_dir, "**", "*"]
     |> Path.join()
     |> Path.wildcard()
   end

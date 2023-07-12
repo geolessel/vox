@@ -16,7 +16,15 @@ defmodule Vox.Builder.FileWriter do
 
     Logger.info("Saving files...")
 
-    Vox.Builder.Collection.list_finals()
+    files = Vox.Builder.Collection.list_finals()
+
+    # TODO Clean this up A LOT
+    files_by_type =
+      Enum.reduce(files, %{}, fn %{type: type} = file, acc ->
+        Map.update(acc, type, [file], &[file | &1])
+      end)
+
+    files_by_type.evaled
     |> Enum.each(fn %{destination_path: path, final: html} ->
       dirname = Path.join([output_dir, Path.dirname(path)])
       Logger.debug("  creating directory: #{dirname}")
@@ -30,6 +38,20 @@ defmodule Vox.Builder.FileWriter do
       File.open(path, [:write], fn file ->
         IO.write(file, html)
       end)
+    end)
+
+    files_by_type.passthrough
+    |> Enum.each(fn %{source_path: source_path, destination_path: destination_path} ->
+      dirname = Path.join([output_dir, Path.dirname(destination_path)])
+      Logger.debug("  creating directory: #{dirname}")
+      File.mkdir_p!(dirname)
+
+      filename = Path.basename(destination_path)
+
+      path = Path.join([dirname, filename])
+      Logger.debug("  saving file: #{path}")
+
+      File.cp!(source_path, path)
     end)
   end
 end
