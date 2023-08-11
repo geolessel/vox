@@ -79,12 +79,13 @@ defmodule Vox.Builder.FileCompiler do
     end)
   end
 
-  def partial(partial_path) do
+  def partial(partial_path, assigns) do
     file_path = Path.join(Application.get_env(:vox, :src_dir), partial_path)
-    Elixir.File.read!(file_path)
+    EEx.eval_file(file_path, assigns: assigns)
   end
 
   defp compute_bindings(files) do
+    # for the __ENV__ later on
     require Vox
 
     Enum.map(files, fn file ->
@@ -111,7 +112,11 @@ defmodule Vox.Builder.FileCompiler do
 
       %File{compiled: compiled, type: :evaled} = file ->
         {content, _bindings} =
-          Code.eval_quoted(compiled, [assigns: Vox.Builder.Collection.assigns()], __ENV__)
+          Code.eval_quoted(
+            compiled,
+            [assigns: Vox.Builder.Collection.assigns() ++ file.bindings],
+            __ENV__
+          )
 
         %{file | content: String.trim(content)}
     end)

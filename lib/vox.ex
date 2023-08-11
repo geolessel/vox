@@ -7,11 +7,21 @@ defmodule Vox do
   path to the partial file on your filesystem starting from your
   site's `src_dir` (as defined in config.exs).
 
-  Think of this process as a simple copy/paste action.
+  The partial file will be evaluated by the EEx engine. If you want
+  your partial to have any assigns of its own, pass it as the second
+  argument. To pass on _all_ assigns, simply call the function
+  with `assigns` as the second argument.
 
-  This DOES NOT evaulate variables within the partial file (yet).
+  ## Examples
+
+      # The partial file needs no assigns
+      Vox.partial("/partials/copyright.html.eex")
+
+      # The partial file needs _all_ the current assigns
+      Vox.partial("/partials/header.html.eex", assigns)
+
   """
-  def partial(partial_path) do
+  def partial(partial_path, assigns \\ []) do
     if !String.starts_with?(partial_path, "/"),
       do:
         raise("""
@@ -22,6 +32,6 @@ defmodule Vox do
                write `/#{partial_path}`
         """)
 
-    Vox.Builder.FileCompiler.partial(partial_path)
+    Vox.Builder.FileCompiler.partial(partial_path, assigns)
   end
 end
