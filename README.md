@@ -37,6 +37,12 @@ Then start writing!
 Any file with a `.eex` extension will be compiled and your directory structure beneath your `src_dir` will be retained.
 For example, if I have a file named `site/blog/posts/2023/hello-world.html.eex` then that file will be compiled into `_html/blog/posts/2023/hello-world.html`.
 
+To build your site, run `mix vox.build`.
+
+To start a dev server that rebuilds the site on filesystem changes, run `mix vox.dev`.
+**Note that for now, you will have to manually reload the page you are on to see the changes.**
+Automatic reloading is on the wishlist.
+
 ### Template file
 
 For now, **you must have a `src_dir/_template.html.eex` file defined**.
