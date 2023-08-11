@@ -110,9 +110,10 @@ The `@posts` and `@elixir` are already bound and ready to use because they were 
 ### Partials
 
 If you have a bit of code or markup that is reused often in your site, it might be beneficial to put it into a partial.
-**For now, partials cannot access assigns or other variables.**
 
 To render the contents of a partial file, use the **Vox.partial/1** function passing the full path of the file from your source directory.
+If your partial needs access to variables your current page has access to, pass them in as the optional second argument.
+To pass on _all_ the assigns that your current page has access to, simply pass `assigns` as the second argument.
 
 For example, if you specified your source directory as `my-blog` and you had a partial file located on your filesystem at `my-blog/partials/copyright.html`, you would insert it into an EEx file like...
 
@@ -120,7 +121,13 @@ For example, if you specified your source directory as `my-blog` and you had a p
 <%= Vox.partial("/partials/copyright.html") %>
 ```
 
-Note that it is important to pass the initial slash `/` in the path.
+To let your partial have access to all currently known assigns:
+
+```elixir
+<%= Vox.partial("/partials/header.html.eex", assigns %>
+```
+
+Note that it is important and required to pass the initial slash `/` in the path.
 
 ## TODO
 
