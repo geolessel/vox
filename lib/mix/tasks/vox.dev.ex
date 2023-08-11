@@ -7,6 +7,7 @@ defmodule Mix.Tasks.Vox.Dev do
 
   @impl Mix.Task
   def run(_args) do
+    Vox.Builder.start()
     Vox.Builder.build()
 
     Supervisor.start_link([{Bandit, plug: Vox.Dev.Server}],

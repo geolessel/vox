@@ -7,6 +7,7 @@ defmodule Mix.Tasks.Vox.Build do
 
   @impl Mix.Task
   def run(_args) do
+    Vox.Builder.start()
     Vox.Builder.build()
   end
 end

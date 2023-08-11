@@ -1,6 +1,9 @@
 defmodule Vox.Builder do
-  def build do
+  def start do
     {:ok, _pid} = Vox.Builder.Collection.start_link()
+  end
+
+  def build do
     Vox.Builder.FileFinder.collect(Application.get_env(:vox, :src_dir))
     Vox.Builder.FileCompiler.compile()
 
