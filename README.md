@@ -128,15 +128,3 @@ To let your partial have access to all currently known assigns:
 ```
 
 Note that it is important and required to pass the initial slash `/` in the path.
-
-## TODO
-
-- [x] Evaluate partials so you can use variables/assigns in them
-- [ ] Add configurable excludable paths/directories from the file writer (so I could have a `partials` directory that doesn't get copied over to my generated site)
-- [ ] Maybe a default partials directory that we search first?
-- [ ] Figure out some way to not have to pass the assigns to a partial
-
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/vox>.
