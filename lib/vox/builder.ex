@@ -4,6 +4,7 @@ defmodule Vox.Builder do
   end
 
   def build do
+    Vox.Builder.Collection.empty()
     Vox.Builder.FileFinder.collect(Application.get_env(:vox, :src_dir))
     Vox.Builder.FileCompiler.compile()
 
