@@ -12,6 +12,15 @@ defmodule Vox.Dev.Server do
 
   match "*glob" do
     file_path = Path.join([@output_dir | glob])
+
+    handle_request(conn, file_path)
+  end
+
+  defp handle_errors(conn, %{kind: _kind, reason: _reason, stack: _stack}) do
+    send_resp(conn, conn.status, "Something went wrong")
+  end
+
+  defp handle_request(conn, file_path) do
     mime_type = MIME.from_path(file_path)
 
     case File.read(file_path) do
@@ -24,10 +33,11 @@ defmodule Vox.Dev.Server do
         conn
         |> put_resp_content_type(mime_type)
         |> send_resp(404, "Not found")
-    end
-  end
 
-  defp handle_errors(conn, %{kind: _kind, reason: _reason, stack: _stack}) do
-    send_resp(conn, conn.status, "Something went wrong")
+      {:error, :eisdir} ->
+        # request was for a directory
+        conn
+        |> handle_request(Path.join(file_path, "index.html"))
+    end
   end
 end

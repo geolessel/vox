@@ -1,14 +1,6 @@
 # Vox
 
-1. find all the files to process
-   `Vox.Builder.FileFinder`
-2. compile non-template files (`EEx.compile_file/1`, `Code.eval_quoted/1`)
-   `Vox.Builder.FileCompiler`
-3. put compiled files into template files (`EEx.eval_file/2`)
-   `Vox.Builder.Templater`
-4. save file contents to the correct path
-
-**TODO: Add description**
+A Elixir-based static site generator/builder.
 
 ## Installation
 
