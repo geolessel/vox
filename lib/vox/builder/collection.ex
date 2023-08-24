@@ -5,8 +5,7 @@ defmodule Vox.Builder.Collection do
   @initial_state %{
     collections: MapSet.new(),
     templates: [],
-    files: [],
-    final: []
+    files: []
   }
 
   # ┌────────────┐
@@ -31,10 +30,6 @@ defmodule Vox.Builder.Collection do
 
   def list_files() do
     GenServer.call(__MODULE__, :list_files)
-  end
-
-  def list_finals do
-    GenServer.call(__MODULE__, :list_finals)
   end
 
   def update_files(files) do
@@ -98,10 +93,6 @@ defmodule Vox.Builder.Collection do
 
   def handle_call(:inspect, _, state) do
     {:reply, state, state}
-  end
-
-  def handle_call(:list_finals, _, state) do
-    {:reply, state.files, state}
   end
 
   def handle_call(:empty, _, state) do
