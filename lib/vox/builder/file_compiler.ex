@@ -77,11 +77,13 @@ defmodule Vox.Builder.FileCompiler do
     # for the __ENV__ later on
     require Vox
 
+    assigns = Vox.Builder.Collection.assigns()
+
     Enum.map(files, fn file ->
       {_content, bindings} =
         Code.eval_quoted(
           file.compiled,
-          [assigns: Vox.Builder.Collection.assigns()],
+          [assigns: assigns],
           __ENV__
         )
 
@@ -100,6 +102,8 @@ defmodule Vox.Builder.FileCompiler do
   end
 
   defp eval_files(files) do
+    collection_assigns = Vox.Builder.Collection.assigns()
+
     Enum.map(files, fn
       %File{type: :passthrough} = file ->
         file
@@ -108,7 +112,7 @@ defmodule Vox.Builder.FileCompiler do
         {content, _bindings} =
           Code.eval_quoted(
             compiled,
-            [assigns: Vox.Builder.Collection.assigns() ++ file.bindings],
+            [assigns: collection_assigns ++ file.bindings],
             __ENV__
           )
 
