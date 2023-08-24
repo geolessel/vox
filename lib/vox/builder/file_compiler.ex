@@ -10,6 +10,7 @@ defmodule Vox.Builder.FileCompiler do
     |> compute_collections()
     |> compute_bindings()
     |> add_to_collection(:compiled)
+    |> update_collector()
     |> eval_files()
     |> add_to_collection(:evaled)
     |> put_nearest_template()
@@ -88,6 +89,11 @@ defmodule Vox.Builder.FileCompiler do
 
       %{file | bindings: bindings}
     end)
+  end
+
+  defp update_collector(files) do
+    Vox.Builder.Collection.update_files(files)
+    files
   end
 
   defp add_to_collection(files, type) when type in [:compiled, :evaled, :final] do

@@ -39,6 +39,10 @@ defmodule Vox.Builder.Collection do
     GenServer.call(__MODULE__, :list_finals)
   end
 
+  def update_files(files) do
+    GenServer.call(__MODULE__, {:update_files, files})
+  end
+
   def assigns do
     GenServer.call(__MODULE__, :assigns)
   end
@@ -104,6 +108,11 @@ defmodule Vox.Builder.Collection do
 
   def handle_call(:empty, _, state) do
     {:reply, state, @initial_state}
+  end
+
+  def handle_call({:update_files, files}, _, state) do
+    new_state = Map.put(state, :files, files)
+    {:reply, new_state, new_state}
   end
 
   def handle_cast({:add, {file, type}}, state) do
