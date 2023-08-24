@@ -96,11 +96,6 @@ defmodule Vox.Builder.FileCompiler do
     files
   end
 
-  defp add_to_collection(files, type) when type in [:compiled, :evaled, :final] do
-    Enum.each(files, &Vox.Builder.Collection.add(&1, type))
-    files
-  end
-
   defp eval_files(files) do
     collection_assigns = Vox.Builder.Collection.assigns()
 

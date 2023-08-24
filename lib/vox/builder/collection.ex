@@ -18,10 +18,6 @@ defmodule Vox.Builder.Collection do
     GenServer.call(__MODULE__, {:add, {collectable, :unprocessed}})
   end
 
-  def add(file, type) when type in [:compiled, :evaled, :final] do
-    GenServer.cast(__MODULE__, {:add, {file, type}})
-  end
-
   def add_collections(collections) do
     GenServer.cast(__MODULE__, {:add_collections, collections})
   end
