@@ -13,7 +13,7 @@ defmodule Vox.Builder.FileCompiler do
     |> eval_files()
     |> put_nearest_template()
     |> insert_into_template()
-    |> add_to_collection(:final)
+    |> update_collector()
   end
 
   defp compile_files(files) do

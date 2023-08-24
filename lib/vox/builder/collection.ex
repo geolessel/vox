@@ -101,7 +101,7 @@ defmodule Vox.Builder.Collection do
   end
 
   def handle_call(:list_finals, _, state) do
-    {:reply, state.final, state}
+    {:reply, state.files, state}
   end
 
   def handle_call(:empty, _, state) do
