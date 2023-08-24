@@ -140,7 +140,7 @@ defmodule Vox.Builder.FileCompiler do
     Enum.map(files, &put_nearest_template/1)
   end
 
-  def put_nearest_template(%File{type: :passthrought} = file), do: file
+  def put_nearest_template(%File{type: :passthrough} = file), do: file
 
   def put_nearest_template(%File{source_path: path, bindings: bindings} = file) do
     template =
