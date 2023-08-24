@@ -1,17 +1,7 @@
 defmodule Vox.Builder.FileCompiler do
   require Logger
 
-  defmodule File do
-    defstruct bindings: [],
-              collections: [],
-              compiled: nil,
-              content: "",
-              destination_path: "",
-              final: "",
-              source_path: "",
-              template: "",
-              type: nil
-  end
+  alias Vox.Builder.File
 
   @spec compile() :: []
   def compile() do
