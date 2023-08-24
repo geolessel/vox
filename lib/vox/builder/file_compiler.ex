@@ -9,7 +9,6 @@ defmodule Vox.Builder.FileCompiler do
     |> compile_files()
     |> compute_collections()
     |> compute_bindings()
-    |> add_to_collection(:compiled)
     |> update_collector()
     |> eval_files()
     |> add_to_collection(:evaled)

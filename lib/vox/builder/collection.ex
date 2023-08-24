@@ -4,7 +4,6 @@ defmodule Vox.Builder.Collection do
   # TODO: once I'm confident in the compilation process, I can eliminate a lot of these intermediate pieces of state
   @initial_state %{
     collections: MapSet.new(),
-    compiled: [],
     templates: [],
     evaled: [],
     files: [],
@@ -88,7 +87,7 @@ defmodule Vox.Builder.Collection do
       state.collections
       |> Enum.reduce(%{}, fn collection, acc ->
         files_in_collection =
-          state.compiled
+          state.files
           |> Enum.filter(fn %{collections: collections} -> collection in collections end)
 
         Map.put(acc, collection, files_in_collection)
