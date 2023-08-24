@@ -35,10 +35,6 @@ defmodule Vox.Builder.Collection do
     GenServer.call(__MODULE__, :list_files)
   end
 
-  def list_collection(type) do
-    GenServer.call(__MODULE__, {:list_collection, type})
-  end
-
   def list_finals do
     GenServer.call(__MODULE__, :list_finals)
   end
@@ -82,7 +78,7 @@ defmodule Vox.Builder.Collection do
     {:reply, state.files, state}
   end
 
-  # TODO: I could probably do this more efficiently by going through each file instead
+  # TODO I could probably do this more efficiently by going through each file instead
   def handle_call(:assigns, _, state) do
     assigns =
       state.collections
@@ -96,20 +92,6 @@ defmodule Vox.Builder.Collection do
       |> Enum.into([])
 
     {:reply, assigns, state}
-  end
-
-  def handle_call({:list_collection, type}, _, state) do
-    members =
-      state.compiled
-      |> Enum.filter(fn %{bindings: bindings} ->
-        bindings
-        |> Enum.into(%{})
-        |> Map.get(:collections, [])
-        |> List.wrap()
-        |> Enum.any?(&(&1 == type))
-      end)
-
-    {:reply, members, state}
   end
 
   def handle_call(:inspect, _, state) do
