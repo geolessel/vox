@@ -11,7 +11,6 @@ defmodule Vox.Builder.FileCompiler do
     |> compute_bindings()
     |> update_collector()
     |> eval_files()
-    |> add_to_collection(:evaled)
     |> put_nearest_template()
     |> insert_into_template()
     |> add_to_collection(:final)

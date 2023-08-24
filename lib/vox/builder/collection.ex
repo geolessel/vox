@@ -5,7 +5,6 @@ defmodule Vox.Builder.Collection do
   @initial_state %{
     collections: MapSet.new(),
     templates: [],
-    evaled: [],
     files: [],
     final: []
   }
