@@ -1,17 +1,7 @@
 defmodule Vox.Builder.FileCompiler do
   require Logger
 
-  defmodule File do
-    defstruct bindings: [],
-              collections: [],
-              compiled: nil,
-              content: "",
-              destination_path: "",
-              final: "",
-              source_path: "",
-              template: "",
-              type: nil
-  end
+  alias Vox.Builder.File
 
   @spec compile() :: []
   def compile() do
@@ -19,16 +9,15 @@ defmodule Vox.Builder.FileCompiler do
     |> compile_files()
     |> compute_collections()
     |> compute_bindings()
-    |> add_to_collection(:compiled)
+    |> update_collector()
     |> eval_files()
-    |> add_to_collection(:evaled)
     |> put_nearest_template()
     |> insert_into_template()
-    |> add_to_collection(:final)
+    |> update_collector()
   end
 
-  defp compile_files(paths) do
-    Enum.reduce(paths, [], fn path, acc ->
+  defp compile_files(files) do
+    Enum.reduce(files, [], fn %File{source_path: path} = file, acc ->
       case Path.extname(path) do
         # TODO: handle non-.eex evaled files
         ".eex" ->
@@ -41,10 +30,10 @@ defmodule Vox.Builder.FileCompiler do
 
           [
             %File{
-              compiled: compiled,
-              source_path: path,
-              destination_path: destination_path,
-              type: :evaled
+              file
+              | compiled: compiled,
+                destination_path: destination_path,
+                type: :evaled
             }
             | acc
           ]
@@ -54,7 +43,7 @@ defmodule Vox.Builder.FileCompiler do
 
         _ext_of_passthrough ->
           destination_path = String.trim_leading(path, Application.get_env(:vox, :src_dir) <> "/")
-          [%File{source_path: path, destination_path: destination_path, type: :passthrough} | acc]
+          [%File{file | destination_path: destination_path, type: :passthrough} | acc]
       end
     end)
   end
@@ -88,11 +77,13 @@ defmodule Vox.Builder.FileCompiler do
     # for the __ENV__ later on
     require Vox
 
+    assigns = Vox.Builder.Collection.assigns()
+
     Enum.map(files, fn file ->
       {_content, bindings} =
         Code.eval_quoted(
           file.compiled,
-          [assigns: Vox.Builder.Collection.assigns()],
+          [assigns: assigns],
           __ENV__
         )
 
@@ -100,12 +91,14 @@ defmodule Vox.Builder.FileCompiler do
     end)
   end
 
-  defp add_to_collection(files, type) when type in [:compiled, :evaled, :final] do
-    Enum.each(files, &Vox.Builder.Collection.add(&1, type))
+  defp update_collector(files) do
+    Vox.Builder.Collection.update_files(files)
     files
   end
 
   defp eval_files(files) do
+    collection_assigns = Vox.Builder.Collection.assigns()
+
     Enum.map(files, fn
       %File{type: :passthrough} = file ->
         file
@@ -114,7 +107,7 @@ defmodule Vox.Builder.FileCompiler do
         {content, _bindings} =
           Code.eval_quoted(
             compiled,
-            [assigns: Vox.Builder.Collection.assigns() ++ file.bindings],
+            [assigns: collection_assigns ++ file.bindings],
             __ENV__
           )
 
@@ -146,7 +139,7 @@ defmodule Vox.Builder.FileCompiler do
     Enum.map(files, &put_nearest_template/1)
   end
 
-  def put_nearest_template(%File{type: :passthrought} = file), do: file
+  def put_nearest_template(%File{type: :passthrough} = file), do: file
 
   def put_nearest_template(%File{source_path: path, bindings: bindings} = file) do
     template =

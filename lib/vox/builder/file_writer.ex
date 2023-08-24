@@ -16,7 +16,7 @@ defmodule Vox.Builder.FileWriter do
 
     Logger.info("Saving files...")
 
-    files = Vox.Builder.Collection.list_finals()
+    files = Vox.Builder.Collection.list_files()
 
     # TODO Clean this up A LOT
     files_by_type =

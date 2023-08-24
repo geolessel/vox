@@ -1,14 +1,9 @@
 defmodule Vox.Builder.Collection do
   use GenServer
 
-  # TODO: once I'm confident in the compilation process, I can eliminate a lot of these intermediate pieces of state
   @initial_state %{
     collections: MapSet.new(),
-    compiled: [],
-    templates: [],
-    evaled: [],
-    files: [],
-    final: []
+    files: []
   }
 
   # ┌────────────┐
@@ -23,10 +18,6 @@ defmodule Vox.Builder.Collection do
     GenServer.call(__MODULE__, {:add, {collectable, :unprocessed}})
   end
 
-  def add(file, type) when type in [:compiled, :evaled, :final] do
-    GenServer.cast(__MODULE__, {:add, {file, type}})
-  end
-
   def add_collections(collections) do
     GenServer.cast(__MODULE__, {:add_collections, collections})
   end
@@ -35,12 +26,8 @@ defmodule Vox.Builder.Collection do
     GenServer.call(__MODULE__, :list_files)
   end
 
-  def list_collection(type) do
-    GenServer.call(__MODULE__, {:list_collection, type})
-  end
-
-  def list_finals do
-    GenServer.call(__MODULE__, :list_finals)
+  def update_files(files) do
+    GenServer.call(__MODULE__, {:update_files, files})
   end
 
   def assigns do
@@ -64,17 +51,7 @@ defmodule Vox.Builder.Collection do
   end
 
   def handle_call({:add, {path, :unprocessed}}, _, state) do
-    state =
-      case Path.basename(path) do
-        "_" <> _rest ->
-          templates = [path | state.templates]
-          Map.put(state, :templates, templates)
-
-        _ ->
-          files = [path | state.files]
-          Map.put(state, :files, files)
-      end
-
+    state = Map.put(state, :files, [%Vox.Builder.File{source_path: path} | state.files])
     {:reply, state, state}
   end
 
@@ -82,13 +59,13 @@ defmodule Vox.Builder.Collection do
     {:reply, state.files, state}
   end
 
-  # TODO: I could probably do this more efficiently by going through each file instead
+  # TODO I could probably do this more efficiently by going through each file instead
   def handle_call(:assigns, _, state) do
     assigns =
       state.collections
       |> Enum.reduce(%{}, fn collection, acc ->
         files_in_collection =
-          state.compiled
+          state.files
           |> Enum.filter(fn %{collections: collections} -> collection in collections end)
 
         Map.put(acc, collection, files_in_collection)
@@ -98,30 +75,17 @@ defmodule Vox.Builder.Collection do
     {:reply, assigns, state}
   end
 
-  def handle_call({:list_collection, type}, _, state) do
-    members =
-      state.compiled
-      |> Enum.filter(fn %{bindings: bindings} ->
-        bindings
-        |> Enum.into(%{})
-        |> Map.get(:collections, [])
-        |> List.wrap()
-        |> Enum.any?(&(&1 == type))
-      end)
-
-    {:reply, members, state}
-  end
-
   def handle_call(:inspect, _, state) do
     {:reply, state, state}
   end
 
-  def handle_call(:list_finals, _, state) do
-    {:reply, state.final, state}
-  end
-
   def handle_call(:empty, _, state) do
     {:reply, state, @initial_state}
+  end
+
+  def handle_call({:update_files, files}, _, state) do
+    new_state = Map.put(state, :files, files)
+    {:reply, new_state, new_state}
   end
 
   def handle_cast({:add, {file, type}}, state) do

@@ -1,5 +1,4 @@
 defmodule Vox.Dev.Server do
-  @src_dir Application.compile_env(:vox, :src_dir)
   @output_dir Application.compile_env(:vox, :output_dir)
 
   use Plug.Router
