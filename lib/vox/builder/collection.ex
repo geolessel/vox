@@ -67,7 +67,7 @@ defmodule Vox.Builder.Collection do
           Map.put(state, :templates, templates)
 
         _ ->
-          files = [path | state.files]
+          files = [%Vox.Builder.File{source_path: path} | state.files]
           Map.put(state, :files, files)
       end
 
