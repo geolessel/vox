@@ -1,10 +1,8 @@
 defmodule Vox.Builder.Collection do
   use GenServer
 
-  # TODO: once I'm confident in the compilation process, I can eliminate a lot of these intermediate pieces of state
   @initial_state %{
     collections: MapSet.new(),
-    templates: [],
     files: []
   }
 
@@ -57,17 +55,7 @@ defmodule Vox.Builder.Collection do
   end
 
   def handle_call({:add, {path, :unprocessed}}, _, state) do
-    state =
-      case Path.basename(path) do
-        "_" <> _rest ->
-          templates = [path | state.templates]
-          Map.put(state, :templates, templates)
-
-        _ ->
-          files = [%Vox.Builder.File{source_path: path} | state.files]
-          Map.put(state, :files, files)
-      end
-
+    state = Map.put(state, :files, [%Vox.Builder.File{source_path: path} | state.files])
     {:reply, state, state}
   end
 
