@@ -5,6 +5,7 @@ defmodule Vox.Dev.Server do
   use Plug.Debugger
   use Plug.ErrorHandler
 
+  plug(PlugLiveReload)
   plug(Plug.Logger, log: :debug)
   plug(:match)
   plug(:dispatch)

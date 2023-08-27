@@ -24,6 +24,7 @@ defmodule Vox.MixProject do
     [
       {:plug, "~> 1.14.2"},
       {:plug_cowboy, "~> 2.0"},
+      {:plug_live_reload, "~> 0.1"},
       {:file_system, "~> 0.2"},
       {:mime, "~> 2.0.5"}
     ]
