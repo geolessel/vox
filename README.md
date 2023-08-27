@@ -35,7 +35,19 @@ To start a dev server that rebuilds the site on filesystem changes, run `mix vox
 **Note that for now, you will have to manually reload the page you are on to see the changes.**
 Automatic reloading is on the wishlist.
 
-### Template file
+### Root template
+
+**You must have a `src_dir/_root.html.eex` file defined**.
+This file contains code that will be in _every_ rendered html file.
+
+Typically, this will contain your initial `html`, `head`, and `body` tags.
+Render your further child template with
+
+```elixir
+<%= @inner_content %>
+```
+
+### Template files
 
 For now, **you must have a `src_dir/_template.html.eex` file defined**.
 The compiler will use that file as the default template.
