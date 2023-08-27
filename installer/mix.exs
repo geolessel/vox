@@ -7,14 +7,20 @@ defmodule VoxNew.MixProject do
       version: "0.1.0",
       elixir: "~> 1.15",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      description: """
+      Vox static site project generator.
+
+      Provides a `mix vox.new` task to bootstrap a new Elixir application
+      with Vox dependencies.
+      """
     ]
   end
 
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:eex, :logger]
     ]
   end
 
