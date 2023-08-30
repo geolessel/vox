@@ -20,7 +20,7 @@ defmodule VoxNew.Templater do
         path = Path.join(base_path, template_path)
         compiled = EEx.compile_file(path)
 
-        quote do
+        quote generated: true do
           @external_resource unquote(path)
           @file unquote(path)
           def render_template(unquote(template_path), var!(assigns)), do: unquote(compiled)
