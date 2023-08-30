@@ -24,7 +24,8 @@ defmodule Vox.Builder.FileWriter do
         Map.update(acc, type, [file], &[file | &1])
       end)
 
-    files_by_type.evaled
+    files_by_type
+    |> Map.get(:evaled, [])
     |> Enum.each(fn %{destination_path: path, final: html} ->
       dirname = Path.join([output_dir, Path.dirname(path)])
       Logger.debug("  creating directory: #{dirname}")
@@ -40,7 +41,8 @@ defmodule Vox.Builder.FileWriter do
       end)
     end)
 
-    files_by_type.passthrough
+    files_by_type
+    |> Map.get(:passthrough, [])
     |> Enum.each(fn %{source_path: source_path, destination_path: destination_path} ->
       dirname = Path.join([output_dir, Path.dirname(destination_path)])
       Logger.debug("  creating directory: #{dirname}")
