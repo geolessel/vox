@@ -4,6 +4,8 @@ defmodule Mix.Tasks.Vox.New do
   use Mix.Task
   use VoxNew.Templater
 
+  alias VoxNew.Project
+
   template("site/_root.html.eex")
   template("site/_template.html.eex")
   template("site/index.html.eex")
@@ -14,23 +16,23 @@ defmodule Mix.Tasks.Vox.New do
   def run(argv) do
     {_parse, [path | _rest], _invalid} = OptionParser.parse(argv, strict: [])
 
-    generate(path)
+    generate(%Project{app_name: String.capitalize(path), base_path: path})
   end
 
-  defp generate(base_path) do
-    base_path
+  defp generate(project) do
+    project
     |> run_mix_new()
     |> inject_deps()
     |> create_directories()
     |> copy_templates()
   end
 
-  defp run_mix_new(base_path) do
+  defp run_mix_new(%Project{base_path: base_path} = project) do
     Mix.shell().cmd("mix new #{base_path}")
-    base_path
+    project
   end
 
-  defp inject_deps(base_path) do
+  defp inject_deps(%Project{base_path: base_path} = project) do
     string_to_split_on = """
       defp deps do
         [
@@ -49,24 +51,27 @@ defmodule Mix.Tasks.Vox.New do
       |> Kernel.<>(post)
 
     File.write!(mix_path, mix_contents)
-    base_path
+
+    project
   end
 
-  defp create_directories(base_path) do
+  defp create_directories(%Project{base_path: base_path} = project) do
     @templates
     |> Enum.map(&Path.dirname(Path.join(base_path, &1)))
     |> Enum.uniq()
     |> Enum.each(&Mix.Generator.create_directory/1)
 
-    base_path
+    project
   end
 
-  defp copy_templates(base_path) do
+  defp copy_templates(%Project{app_name: app_name, base_path: base_path} = project) do
     @templates
     |> Enum.each(fn template ->
       write_path = Path.join(base_path, template)
-      contents = render_template(template, app_name: String.capitalize(base_path))
+      contents = render_template(template, app_name: app_name)
       Mix.Generator.create_file(write_path, contents)
     end)
+
+    project
   end
 end
