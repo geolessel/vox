@@ -1,0 +1,23 @@
+<%%
+  title = "Home"
+%>
+
+<h1 class="text-7xl text-slate-800 font-black border-b-8 border-slate-800">Welcome to Vox</h1>
+
+<div class="flex flex-row justify-between mt-6 space-x-4">
+  <div>
+    <p>This is your new site!</p>
+    <p>This file is located at <code class="bg-zinc-200 p-1">@src_dir/index.html.eex</code> and is rendered inside of <code class="bg-zinc-200 p-1">@src_dir/_template.html.eex</code>.</p>
+  </div>
+
+  <div class="w-64 bg-slate-700 text-white rounded-xl p-3">
+    <h2 class="text-xl font-heavy text-center">Latest posts</h2>
+    <ul>
+      <%%= for post <- @posts do %>
+        <li>
+          <a href="<%%= post.destination_path %>" class="underline"><%%= post.bindings[:title] %></a>
+        </li>
+      <%% end %>
+    </ul>
+  </div>
+</div>

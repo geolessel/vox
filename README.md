@@ -2,10 +2,21 @@
 
 A Elixir-based static site generator/builder.
 
-## Installation
+## Quick start
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `vox` to your list of dependencies in `mix.exs`:
+There is a new site generator that is the quickest way to get started.
+In order to use it, run
+
+```bash
+mix archive.install hex vox_new
+mix vox.new blog
+```
+
+This will generate a simple scaffolded site that you can customize and tweak as you see fit.
+
+## Manual installation
+
+The package can be installed by adding `vox` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do

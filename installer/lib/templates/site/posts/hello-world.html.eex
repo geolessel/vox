@@ -1,0 +1,7 @@
+<%%
+  title = "Hello world!"
+  date = ~D[2023-05-05]
+  collections = :posts
+%>
+
+<h1>Hello there! This is a blog post.</h1>
