@@ -1,0 +1,3 @@
+<div class="bg-zinc-200 p-3 rounded-lg">
+  <%%= @inner_content %>
+</div>
