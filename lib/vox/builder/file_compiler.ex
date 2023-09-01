@@ -130,7 +130,6 @@ defmodule Vox.Builder.FileCompiler do
           |> Enum.into(Keyword.new())
           |> Keyword.merge(inner_content: content)
 
-
         templated = EEx.eval_file(template, assigns: assigns)
 
         assigns = Keyword.merge(assigns, inner_content: templated)
