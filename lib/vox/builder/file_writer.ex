@@ -1,15 +1,19 @@
 defmodule Vox.Builder.FileWriter do
   require Logger
 
-  def write() do
+  alias Vox.Builder
+
+  def write(%Builder{clean: clean} = _opts) do
     {:ok, output_dir} = Path.safe_relative(Application.get_env(:vox, :output_dir))
 
     if String.starts_with?(output_dir, "/") || String.starts_with?(output_dir, ".."),
       do: raise("For safety reasons, your output dir can't start with `/` or `..`")
 
-    Logger.info("Deleting output directory (#{output_dir})...")
-    {:ok, removed} = File.rm_rf(output_dir)
-    Enum.each(removed, fn path -> Logger.debug("  deleted #{path}") end)
+    if clean do
+      Logger.info("Deleting output directory (#{output_dir})...")
+      {:ok, removed} = File.rm_rf(output_dir)
+      Enum.each(removed, fn path -> Logger.debug("  deleted #{path}") end)
+    end
 
     Logger.info("Creating output directory (#{output_dir})...")
     File.mkdir_p!(output_dir)

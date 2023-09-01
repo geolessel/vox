@@ -1,19 +1,33 @@
 defmodule Mix.Tasks.Vox.Dev do
   @shortdoc "Start and run the dev server"
+
+  @moduledoc """
+  Start a development server for local Vox site development.
+
+  ## Command line options
+
+      * `--clean` - delete the output directory before building
+  """
+
   @src_dir Application.compile_env(:vox, :src_dir)
   @output_dir Application.compile_env(:vox, :output_dir)
 
   use Mix.Task
 
+  alias Vox.Builder
+
   @requirements ["app.start"]
 
   @impl Mix.Task
-  def run(_args) do
-    Vox.Builder.start()
-    Vox.Builder.build()
+  def run(args) do
+    opts =
+      args
+      |> Builder.process_args()
+      |> Builder.start()
+      |> Builder.build()
 
     configure_live_browser_reloading()
-    start_file_watcher()
+    start_file_watcher(opts)
     start_server()
 
     Process.sleep(:infinity)
@@ -22,7 +36,8 @@ defmodule Mix.Tasks.Vox.Dev do
   defp configure_live_browser_reloading,
     do: Application.put_env(:plug_live_reload, :patterns, [~r"#{@output_dir}/*"])
 
-  defp start_file_watcher, do: Vox.Dev.Watcher.start_link(dirs: ["lib", @src_dir])
+  defp start_file_watcher(%Builder{} = opts),
+    do: Vox.Dev.Watcher.start_link(dirs: ["lib", @src_dir], opts: opts)
 
   defp start_server do
     children = [
