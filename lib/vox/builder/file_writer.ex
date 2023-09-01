@@ -1,5 +1,8 @@
 defmodule Vox.Builder.FileWriter do
-  require Logger
+  import Mix.Shell.IO, only: [info: 1]
+
+  import Mix.Generator,
+    only: [copy_file: 3, create_directory: 2, create_file: 2]
 
   alias Vox.Builder
 
@@ -10,15 +13,11 @@ defmodule Vox.Builder.FileWriter do
       do: raise("For safety reasons, your output dir can't start with `/` or `..`")
 
     if clean do
-      Logger.info("Deleting output directory (#{output_dir})...")
       {:ok, removed} = File.rm_rf(output_dir)
-      Enum.each(removed, fn path -> Logger.debug("  deleted #{path}") end)
+      Enum.each(removed, &report_deleted/1)
     end
 
-    Logger.info("Creating output directory (#{output_dir})...")
-    File.mkdir_p!(output_dir)
-
-    Logger.info("Saving files...")
+    Mix.Generator.create_directory(output_dir)
 
     files = Vox.Builder.Collection.list_files()
 
@@ -32,32 +31,27 @@ defmodule Vox.Builder.FileWriter do
     |> Map.get(:evaled, [])
     |> Enum.each(fn %{destination_path: path, final: html} ->
       dirname = Path.join([output_dir, Path.dirname(path)])
-      Logger.debug("  creating directory: #{dirname}")
-      File.mkdir_p!(dirname)
+      create_directory(dirname, quiet: true)
 
       filename = Path.basename(path)
 
       path = Path.join([dirname, filename])
-      Logger.debug("  saving file: #{path}")
-
-      File.open(path, [:write], fn file ->
-        IO.write(file, html)
-      end)
+      create_file(path, html)
     end)
 
     files_by_type
     |> Map.get(:passthrough, [])
     |> Enum.each(fn %{source_path: source_path, destination_path: destination_path} ->
       dirname = Path.join([output_dir, Path.dirname(destination_path)])
-      Logger.debug("  creating directory: #{dirname}")
-      File.mkdir_p!(dirname)
+      create_directory(dirname, quiet: true)
 
       filename = Path.basename(destination_path)
 
       path = Path.join([dirname, filename])
-      Logger.debug("  saving file: #{path}")
-
-      File.cp!(source_path, path)
+      copy_file(source_path, path, force: true)
     end)
   end
+
+  defp report_deleted(path),
+    do: info(IO.ANSI.red() <> "* deleted" <> IO.ANSI.reset() <> " " <> path)
 end

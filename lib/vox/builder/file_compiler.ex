@@ -1,6 +1,4 @@
 defmodule Vox.Builder.FileCompiler do
-  require Logger
-
   alias Vox.Builder.File
 
   @spec compile() :: []
