@@ -1,3 +1,3 @@
 defmodule VoxNew.Project do
-  defstruct base_path: nil, module_name: nil
+  defstruct app_name: nil, base_path: nil, module_name: nil
 end

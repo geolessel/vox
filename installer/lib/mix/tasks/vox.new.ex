@@ -16,7 +16,11 @@ defmodule Mix.Tasks.Vox.New do
   def run(argv) do
     {_parse, [path | _rest], _invalid} = OptionParser.parse(argv, strict: [])
 
-    generate(%Project{module_name: Macro.camelize(path), base_path: path})
+    # [TODO] I think these could result in incorrect formatting
+    module_name = Macro.camelize(path)
+    app_name = Macro.underscore(path)
+
+    generate(%Project{app_name: app_name, module_name: module_name, base_path: path})
   end
 
   defp generate(project) do
