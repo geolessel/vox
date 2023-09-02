@@ -16,7 +16,7 @@ defmodule Mix.Tasks.Vox.New do
   def run(argv) do
     {_parse, [path | _rest], _invalid} = OptionParser.parse(argv, strict: [])
 
-    generate(%Project{app_name: Macro.camelize(path), base_path: path})
+    generate(%Project{module_name: Macro.camelize(path), base_path: path})
   end
 
   defp generate(project) do
@@ -64,11 +64,11 @@ defmodule Mix.Tasks.Vox.New do
     project
   end
 
-  defp copy_templates(%Project{app_name: app_name, base_path: base_path} = project) do
+  defp copy_templates(%Project{module_name: module_name, base_path: base_path} = project) do
     @templates
     |> Enum.each(fn template ->
       write_path = Path.join(base_path, template)
-      contents = render_template(template, app_name: app_name)
+      contents = render_template(template, module_name: module_name)
       Mix.Generator.create_file(write_path, contents)
     end)
 
