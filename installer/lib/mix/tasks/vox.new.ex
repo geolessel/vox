@@ -16,7 +16,7 @@ defmodule Mix.Tasks.Vox.New do
   def run(argv) do
     {_parse, [path | _rest], _invalid} = OptionParser.parse(argv, strict: [])
 
-    generate(%Project{app_name: String.capitalize(path), base_path: path})
+    generate(%Project{app_name: Macro.camelize(path), base_path: path})
   end
 
   defp generate(project) do
