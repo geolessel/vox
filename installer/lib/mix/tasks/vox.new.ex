@@ -30,34 +30,6 @@ defmodule Mix.Tasks.Vox.New do
     |> copy_templates()
   end
 
-  defp run_mix_new(%Project{base_path: base_path} = project) do
-    Mix.shell().cmd("mix new #{base_path}")
-    project
-  end
-
-  defp inject_deps(%Project{base_path: base_path} = project) do
-    string_to_split_on = """
-      defp deps do
-        [
-    """
-
-    mix_path = Path.join(base_path, "mix.exs")
-
-    mix_contents = File.read!(mix_path)
-
-    [pre, post] = String.split(mix_contents, string_to_split_on)
-
-    mix_contents =
-      pre
-      |> Kernel.<>(string_to_split_on)
-      |> Kernel.<>("      {:vox, \"~> 0.1\"},\n")
-      |> Kernel.<>(post)
-
-    File.write!(mix_path, mix_contents)
-
-    project
-  end
-
   defp create_directories(%Project{base_path: base_path} = project) do
     @templates
     |> Enum.map(&Path.dirname(Path.join(base_path, &1)))
