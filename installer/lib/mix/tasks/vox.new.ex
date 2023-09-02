@@ -7,6 +7,7 @@ defmodule Mix.Tasks.Vox.New do
   alias VoxNew.Project
 
   template("mix.exs")
+  template("README.md")
   template("site/_root.html.eex")
   template("site/_template.html.eex")
   template("site/index.html.eex")
