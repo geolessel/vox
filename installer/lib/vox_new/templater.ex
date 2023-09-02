@@ -9,7 +9,7 @@ defmodule VoxNew.Templater do
   end
 
   defmacro __before_compile__(env) do
-    base_path = Path.expand("../templates", __DIR__)
+    base_path = Path.expand("../../templates", __DIR__)
 
     quote do
       @base_templates_path unquote(base_path)
