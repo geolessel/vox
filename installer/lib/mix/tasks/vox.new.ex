@@ -16,6 +16,8 @@ defmodule Mix.Tasks.Vox.New do
   template("site/_template.html.eex")
   template("site/index.html.eex")
   template("site/posts/hello-world.html.eex")
+  template("test/test_helper.exs")
+  template("test/#{@template_string_to_replace}_test.exs")
 
   @impl Mix.Task
   def run(argv) do
