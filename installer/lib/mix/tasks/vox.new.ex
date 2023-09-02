@@ -6,6 +6,7 @@ defmodule Mix.Tasks.Vox.New do
 
   alias VoxNew.Project
 
+  template("mix.exs")
   template("site/_root.html.eex")
   template("site/_template.html.eex")
   template("site/index.html.eex")
@@ -25,8 +26,6 @@ defmodule Mix.Tasks.Vox.New do
 
   defp generate(project) do
     project
-    |> run_mix_new()
-    |> inject_deps()
     |> create_directories()
     |> copy_templates()
   end
@@ -72,7 +71,7 @@ defmodule Mix.Tasks.Vox.New do
     @templates
     |> Enum.each(fn template ->
       write_path = Path.join(base_path, template)
-      contents = render_template(template, module_name: module_name)
+      contents = render_template(template, project: project)
       Mix.Generator.create_file(write_path, contents)
     end)
 
