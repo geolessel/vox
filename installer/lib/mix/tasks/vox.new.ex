@@ -32,20 +32,10 @@ defmodule Mix.Tasks.Vox.New do
 
   defp generate(project) do
     project
-    |> create_directories()
     |> copy_templates()
   end
 
-  defp create_directories(%Project{base_path: base_path} = project) do
-    @templates
-    |> Enum.map(&Path.dirname(Path.join(base_path, &1)))
-    |> Enum.uniq()
-    |> Enum.each(&Mix.Generator.create_directory/1)
-
-    project
-  end
-
-  defp copy_templates(%Project{module_name: module_name, base_path: base_path} = project) do
+  defp copy_templates(%Project{base_path: base_path} = project) do
     @templates
     |> Enum.each(fn template ->
       contents = render_template(template, project: project)
