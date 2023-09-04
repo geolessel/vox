@@ -85,7 +85,10 @@ defmodule Vox.Builder.FileCompiler do
           __ENV__
         )
 
-      %{file | bindings: bindings}
+      bindings
+      |> Enum.reduce(%{file | bindings: bindings}, fn {key, value}, file ->
+        Map.put_new(file, key, value)
+      end)
     end)
   end
 
@@ -119,18 +122,19 @@ defmodule Vox.Builder.FileCompiler do
         file
 
       %File{content: content, template: template} = file ->
-        assigns =
+        bindings =
           file.bindings
           |> Enum.filter(fn
             {{_, EEx.Engine}, _} -> false
             _ -> true
           end)
           |> Enum.into(Keyword.new())
-          |> Keyword.merge(inner_content: content)
 
-        templated = EEx.eval_file(template, assigns: assigns)
+        templated =
+          EEx.eval_file(template, assigns: Keyword.merge(bindings, inner_content: content))
 
-        assigns = Keyword.merge(assigns, inner_content: templated)
+        assigns = Keyword.merge(bindings, inner_content: templated)
+
         final = EEx.eval_file(file.root_template, assigns: assigns)
         %{file | final: final}
     end)
