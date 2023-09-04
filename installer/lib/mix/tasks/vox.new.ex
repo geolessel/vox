@@ -10,7 +10,10 @@ defmodule Mix.Tasks.Vox.New do
 
   template("mix.exs")
   template("README.md")
+  template("assets/app.js", :esbuild)
   template("config/config.exs")
+  template("lib/application.ex", :esbuild)
+  template("lib/#{@template_string_to_replace}/esbuild.ex", :esbuild)
   template("lib/#{@template_string_to_replace}.ex")
   template("site/_root.html.eex")
   template("site/_template.html.eex")
@@ -41,18 +44,28 @@ defmodule Mix.Tasks.Vox.New do
     |> copy_templates()
   end
 
-  defp copy_templates(%Project{base_path: base_path} = project) do
+  defp copy_templates(%Project{} = project) do
     @templates
-    |> Enum.each(fn template ->
-      contents = render_template(template, project: project)
+    |> Enum.each(fn
+      {template, true} ->
+        copy_template(template, project)
 
-      template_for_app =
-        String.replace(template, @template_string_to_replace, project.app_name)
-
-      write_path = Path.join(base_path, template_for_app)
-      Mix.Generator.create_file(write_path, contents)
+      {template, flag} when is_atom(flag) ->
+        if Map.get(project, flag) do
+          copy_template(template, project)
+        end
     end)
 
     project
+  end
+
+  defp copy_template(template, %Project{base_path: base_path} = project) do
+    contents = render_template(template, project: project)
+
+    template_for_app =
+      String.replace(template, @template_string_to_replace, project.app_name)
+
+    write_path = Path.join(base_path, template_for_app)
+    Mix.Generator.create_file(write_path, contents)
   end
 end

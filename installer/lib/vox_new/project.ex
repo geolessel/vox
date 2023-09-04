@@ -5,5 +5,7 @@ defmodule VoxNew.Project do
             base_path: nil,
             esbuild: false,
             module_name: nil,
+            output_dir: "_html",
+            src_dir: "site",
             vox_version: @vox_version
 end
