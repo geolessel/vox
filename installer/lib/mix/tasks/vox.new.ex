@@ -1,5 +1,14 @@
 defmodule Mix.Tasks.Vox.New do
   @shortdoc "Generate a new Vox application"
+  @moduledoc """
+  Generate a new Vox application.
+
+  Scaffolds a simple website using Vox.
+
+  ## Command line options
+
+      * `--esbuild` - include a simple esbuild system for asset compliation
+  """
 
   @template_string_to_replace "APP"
 

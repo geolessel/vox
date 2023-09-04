@@ -14,6 +14,10 @@ mix vox.new blog
 
 This will generate a simple scaffolded site that you can customize and tweak as you see fit.
 
+### `vox.new` options
+
+- `--esbuild` - include a simple esbuild installation for asset compilation
+
 ## Manual installation
 
 The package can be installed by adding `vox` to your list of dependencies in `mix.exs`:
