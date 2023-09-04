@@ -16,7 +16,7 @@ defmodule VoxNew.Templater do
     end
 
     templates_ast =
-      for template_path <- Module.get_attribute(env.module, :templates) do
+      for {template_path, _flag} <- Module.get_attribute(env.module, :templates) do
         path = Path.join(base_path, template_path)
         compiled = EEx.compile_file(path)
 
@@ -33,9 +33,9 @@ defmodule VoxNew.Templater do
     end
   end
 
-  defmacro template(name) do
+  defmacro template(name, flag \\ true) do
     quote do
-      @templates unquote(name)
+      @templates {unquote(name), unquote(flag)}
     end
   end
 end

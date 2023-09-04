@@ -3,8 +3,9 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <title><%%= assigns[:title] || "Vox" %></title>
+    <script src="https://cdn.tailwindcss.com"></script><%= if @project.esbuild do %>
+    <script src="/assets/app.js"></script><% end %>
+    <title><%%= assigns[:title] || "<%= @project.module_name %>" %></title>
   </head>
   <body class="bg-zinc-100 antialiased">
     <header class="bg-slate-700 text-white">
