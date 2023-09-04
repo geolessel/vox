@@ -21,13 +21,19 @@ defmodule Mix.Tasks.Vox.New do
 
   @impl Mix.Task
   def run(argv) do
-    {_parse, [path | _rest], _invalid} = OptionParser.parse(argv, strict: [])
+    {flags, [path | _rest]} = OptionParser.parse!(argv, strict: [esbuild: :boolean])
 
     # [TODO] I think these could result in incorrect formatting
     module_name = Macro.camelize(path)
     app_name = Macro.underscore(path)
+    esbuild = Keyword.get(flags, :esbuild, false)
 
-    generate(%Project{app_name: app_name, module_name: module_name, base_path: path})
+    generate(%Project{
+      app_name: app_name,
+      base_path: path,
+      esbuild: esbuild,
+      module_name: module_name
+    })
   end
 
   defp generate(project) do
