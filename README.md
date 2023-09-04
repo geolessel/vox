@@ -126,7 +126,7 @@ The `@posts` and `@elixir` are already bound and ready to use because they were 
 <ul>
   <%= for post <- @posts do %>
     <li>
-      <a href="<%= post.destination_path %>"><%= post.bindings[:title] %></a>
+      <a href="<%= post.destination_path %>"><%= post.title %></a>
     </li>
   <% end %>
 </ul>
