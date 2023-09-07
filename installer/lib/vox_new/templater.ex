@@ -27,10 +27,7 @@ defmodule VoxNew.Templater do
         end
       end
 
-    quote do
-      unquote(templates_ast)
-      def template_files(name), do: Keyword.fetch!(@templates, name)
-    end
+    templates_ast
   end
 
   defmacro template(name, flag \\ true) do
