@@ -73,8 +73,6 @@ defmodule Vox.Builder.FileCompiler do
 
   defp compute_bindings(files) do
     # for the __ENV__ later on
-    require Vox
-
     assigns = Vox.Builder.Collection.assigns()
 
     Enum.map(files, fn file ->
@@ -85,6 +83,7 @@ defmodule Vox.Builder.FileCompiler do
           __ENV__
         )
 
+      # make the bindings accessible through map dot notation
       bindings
       |> Enum.reduce(%{file | bindings: bindings}, fn {key, value}, file ->
         Map.put_new(file, key, value)
@@ -140,13 +139,13 @@ defmodule Vox.Builder.FileCompiler do
     end)
   end
 
-  def put_nearest_template(files) when is_list(files) do
+  defp put_nearest_template(files) when is_list(files) do
     Enum.map(files, &put_nearest_template/1)
   end
 
-  def put_nearest_template(%File{type: :passthrough} = file), do: file
+  defp put_nearest_template(%File{type: :passthrough} = file), do: file
 
-  def put_nearest_template(%File{source_path: path, bindings: bindings} = file) do
+  defp put_nearest_template(%File{source_path: path, bindings: bindings} = file) do
     template =
       case bindings[:template] do
         nil ->

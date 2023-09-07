@@ -20,12 +20,15 @@ This will generate a simple scaffolded site that you can customize and tweak as 
 
 ## Manual installation
 
-The package can be installed by adding `vox` to your list of dependencies in `mix.exs`:
+The package can be installed by adding `vox` to your list of dependencies in `mix.exs`.
+
+For now, it is recommended to install directly from GitHub.
+**Note that the `mix vox.new` generator will generate the `"~> 0.1.0"` version instead.**
 
 ```elixir
 def deps do
   [
-    {:vox, "~> 0.1.0"}
+    {:vox, github: "geolessel/vox"}
   ]
 end
 ```

@@ -2,7 +2,7 @@ defmodule Vox.Builder.FileWriter do
   import Mix.Shell.IO, only: [info: 1]
 
   import Mix.Generator,
-    only: [copy_file: 3, create_directory: 2, create_file: 2]
+    only: [copy_file: 3, create_directory: 2, create_file: 3]
 
   alias Vox.Builder
 
@@ -36,7 +36,7 @@ defmodule Vox.Builder.FileWriter do
       filename = Path.basename(path)
 
       path = Path.join([dirname, filename])
-      create_file(path, html)
+      create_file(path, html, force: true)
     end)
 
     files_by_type
