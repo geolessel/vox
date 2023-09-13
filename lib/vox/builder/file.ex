@@ -1,6 +1,17 @@
 defmodule Vox.Builder.File do
   @src_dir Application.compile_env(:vox, :src_dir)
-
+  @type t :: %__MODULE__{
+          bindings: keyword(),
+          collections: list(),
+          content: binary(),
+          destination_path: binary(),
+          final: binary(),
+          root_template: binary(),
+          source_path: binary(),
+          template: binary(),
+          compiled: any(),
+          type: any()
+        }
   defstruct bindings: [],
             collections: [],
             compiled: nil,

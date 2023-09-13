@@ -19,6 +19,7 @@ defmodule Mix.Tasks.Vox.Dev do
   @requirements ["app.start"]
 
   @impl Mix.Task
+  @spec run([binary]) :: :ok
   def run(args) do
     opts =
       args
