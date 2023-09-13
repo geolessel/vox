@@ -66,6 +66,7 @@ defmodule Vox.Builder.FileCompiler do
     end)
   end
 
+  @spec partial(binary(), keyword()) :: binary()
   def partial(partial_path, assigns) do
     file_path = Path.join(Application.get_env(:vox, :src_dir), partial_path)
     EEx.eval_file(file_path, assigns: assigns)

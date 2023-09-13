@@ -21,6 +21,7 @@ defmodule Vox do
       Vox.partial("/partials/header.html.eex", assigns)
 
   """
+  @spec partial(binary(), keyword()) :: binary()
   def partial(partial_path, assigns \\ []) do
     if !String.starts_with?(partial_path, "/"),
       do:
