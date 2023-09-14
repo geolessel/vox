@@ -10,7 +10,7 @@ defmodule Vox.Builder.File do
           source_path: binary(),
           template: binary(),
           compiled: any(),
-          type: any()
+          type: :evaled | :passthrough
         }
   defstruct bindings: [],
             collections: [],

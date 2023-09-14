@@ -14,7 +14,7 @@ defmodule Vox.Builder do
     %Builder{opts | pid: pid}
   end
 
-  @spec build(Vox.Builder.t()) :: Vox.Builder.t()
+  @spec build(Builder.t()) :: Builder.t()
   def build(%Builder{} = opts) do
     Vox.Builder.Collection.empty()
     Vox.Builder.FileFinder.collect(Application.get_env(:vox, :src_dir))
