@@ -15,7 +15,7 @@ defmodule Vox.Builder.FileCompiler do
     |> update_collector()
   end
 
-  defp extract_frontmatter(files) do
+  def extract_frontmatter(files) do
     Enum.reduce(files, [], fn %File{source_path: path} = file, acc ->
       contents = Elixir.File.read!(path)
 
