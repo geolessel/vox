@@ -109,4 +109,44 @@ defmodule Vox.Builder.FileCompilerTest do
       assert source.collections == [:posts]
     end
   end
+
+  describe "eval_files/1" do
+    test "changes nothing for passthrough files" do
+      before =
+        [%Vox.Builder.File{source_path: "test/support/assets/style.css"}]
+        |> FileCompiler.compile_files()
+        |> FileCompiler.compute_collections()
+        |> FileCompiler.compute_bindings()
+
+      assert before == FileCompiler.eval_files(before)
+    end
+
+    test "stores HTML output in `content`" do
+      [source] =
+        [%Vox.Builder.File{source_path: "test/support/posts/01-hello-world.html.eex"}]
+        |> FileCompiler.compile_files()
+        |> FileCompiler.compute_collections()
+        |> FileCompiler.compute_bindings()
+        |> FileCompiler.update_collector()
+        |> FileCompiler.eval_files()
+
+      assert String.starts_with?(source.content, "<h1>Hello, world</h1>")
+    end
+
+    test "replaces assigns with real values" do
+      raw_contents = File.read!("test/support/posts/01-hello-world.html.eex")
+
+      [evaled] =
+        [%Vox.Builder.File{source_path: "test/support/posts/01-hello-world.html.eex"}]
+        |> FileCompiler.compile_files()
+        |> FileCompiler.compute_collections()
+        |> FileCompiler.compute_bindings()
+        |> FileCompiler.update_collector()
+        |> FileCompiler.eval_files()
+
+      assert String.contains?(raw_contents, "written by <%= @author[:name] %>")
+      assert String.contains?(evaled.content, "written by Geoffrey Lessel")
+      refute String.contains?(evaled.content, "<%= @")
+    end
+  end
 end

@@ -122,12 +122,12 @@ defmodule Vox.Builder.FileCompiler do
     end)
   end
 
-  defp update_collector(files) do
+  def update_collector(files) do
     Vox.Builder.Collection.update_files(files)
     files
   end
 
-  defp eval_files(files) do
+  def eval_files(files) do
     collection_assigns = Vox.Builder.Collection.assigns()
 
     Enum.map(files, fn

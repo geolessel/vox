@@ -12,3 +12,5 @@
 
 This is my first post in my new static site generator project.
 I really hope that you like it.
+
+And I should mention that this article was written by <%= @author[:name] %>.
