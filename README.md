@@ -1,6 +1,6 @@
 # Vox
 
-A Elixir-based static site generator/builder.
+The static site generator for Elixir lovers.
 
 ## Quick start
 
@@ -13,6 +13,9 @@ mix vox.new blog
 ```
 
 This will generate a simple scaffolded site that you can customize and tweak as you see fit.
+
+There is also an example blog built with Vox that attempts to take advantage of all the features of Vox as they are built.
+You can look at the source code for that (and clone it and build it yourself) at [geolessel/vox-example](https://github.com/geolessel/vox-example).
 
 ### `vox.new` options
 
@@ -94,10 +97,31 @@ Instead, they will be copied over in the same directory structure and file name 
 
 For example, if there was an image located on your filesystem at `src_dir/images/logo.png`, it will be available in the generated site structure are `dest_dir/images/logo.png`.
 
-### File metadata (bindings)
+### File metadata (also known as front matter or bindings)
 
-In your `.eex` files, any binding you make inside of `<% ... %>` tags will be sent up to the template as an assign.
-For example, `<% title = "hello world" %>` in a file can be referenced from `<%= assigns[:title] %>` in a template.
+At the top of your `.eex` files, set up the file's front matter inside of `<% ... %>` blocks.
+If you want to set metadata for the file, it needs to be at the top of the `.eex` file.
+
+For now, the syntax **is finicky** and needs to be precise.
+1. The first line should be a lone `<%`
+2. Your metadata or bindings will be next. Feel free to use any [Elixir data types](https://hexdocs.pm/elixir/syntax-reference.html#data-types).
+3. The last line of your metadata declarations should be a lone `%>`
+
+With these set, you can access them outside (or inside) of this file through map syntax.
+Take the following file as an example:
+
+```elixir
+<%
+  title = "Vox helped me build this"
+  author = %{
+    name: "Geoffrey Lessel",
+    site: "https://builditwithphoenix.com"
+  }
+  collections = :posts
+%>
+```
+
+If you were to iterate through your `for post <- @posts do ...` collection, you can now access this information like `post.author.name`.
 
 #### Collections
 
