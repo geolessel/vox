@@ -30,7 +30,7 @@ defmodule Vox.Builder.FileCompiler do
           [
             %File{
               file
-              | frontmatter: frontmatter
+              | frontmatter: Enum.into(frontmatter, %{})
             }
             | acc
           ]
