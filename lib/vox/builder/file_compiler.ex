@@ -146,7 +146,7 @@ defmodule Vox.Builder.FileCompiler do
     end)
   end
 
-  defp insert_into_template(files) do
+  def insert_into_template(files) do
     Enum.map(files, fn
       %File{type: :passthrough} = file ->
         file

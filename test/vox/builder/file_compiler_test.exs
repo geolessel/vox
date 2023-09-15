@@ -5,7 +5,7 @@ defmodule Vox.Builder.FileCompilerTest do
 
   setup_all do
     Application.put_env(:vox, :src_dir, "test/support")
-    Application.put_env(:vox, :destination_dir, "_html")
+    Application.put_env(:vox, :output_dir, "_html")
   end
 
   describe "extract_frontmatter/1" do
@@ -193,6 +193,51 @@ defmodule Vox.Builder.FileCompilerTest do
         |> FileCompiler.put_nearest_template()
 
       assert root_template.template == "test/support/_template.html.eex"
+    end
+  end
+
+  describe "insert_into_template/1" do
+    test "changes nothing for passthrough files" do
+      style = %Vox.Builder.File{type: :passthrough}
+      assert [style] == FileCompiler.insert_into_template([style])
+    end
+
+    test "inserts the file content into its template" do
+      [evaled] =
+        [
+          %Vox.Builder.File{
+            root_template: "test/support/_root.html.eex",
+            source_path: "test/support/posts/work/04-find-my-template.html.eex"
+          }
+        ]
+        |> FileCompiler.compile_files()
+        |> FileCompiler.compute_collections()
+        |> FileCompiler.compute_bindings()
+        |> FileCompiler.update_collector()
+        |> FileCompiler.eval_files()
+        |> FileCompiler.put_nearest_template()
+        |> FileCompiler.insert_into_template()
+
+      assert String.contains?(evaled.final, "<div id=\"you-will-never-find-me\">")
+    end
+
+    test "inserts the file content into the root template" do
+      [evaled] =
+        [
+          %Vox.Builder.File{
+            root_template: "test/support/_root.html.eex",
+            source_path: "test/support/posts/work/04-find-my-template.html.eex"
+          }
+        ]
+        |> FileCompiler.compile_files()
+        |> FileCompiler.compute_collections()
+        |> FileCompiler.compute_bindings()
+        |> FileCompiler.update_collector()
+        |> FileCompiler.eval_files()
+        |> FileCompiler.put_nearest_template()
+        |> FileCompiler.insert_into_template()
+
+      assert String.contains?(evaled.final, "<body id=\"root\">")
     end
   end
 end
