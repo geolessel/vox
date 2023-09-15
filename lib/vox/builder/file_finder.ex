@@ -9,5 +9,6 @@ defmodule Vox.Builder.FileFinder do
     [root_dir, "**", "*"]
     |> Path.join()
     |> Path.wildcard()
+    |> Enum.reject(&File.dir?/1)
   end
 end
