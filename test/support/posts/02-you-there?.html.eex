@@ -1,6 +1,7 @@
 <%
   title = "Are you there, world?"
   date  = ~D[2023-04-19]
+  collections = [:tag1, :tag2]
 %>
 
 I'm looking for a sound to drown out the world

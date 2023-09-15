@@ -1,6 +1,7 @@
 <%
   title = "Today I learned this cool new trick"
   date  = ~D[2023-04-16]
+  template = "_specified_template.html.eex"
 %>
 
 Today at work I learned this cool new trick. Check it out!

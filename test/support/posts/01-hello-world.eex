@@ -1,9 +1,0 @@
-<%
-  title = "Hello world"
-  date  = ~D[2023-04-16]
-%>
-
-<h1>Hello, world</h1>
-
-This is my first post in my new static site generator project.
-I really hope that you like it.

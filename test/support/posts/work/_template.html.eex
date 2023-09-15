@@ -1,0 +1,3 @@
+<div id="you-will-never-find-me">
+  <%= @inner_content %>
+</div>

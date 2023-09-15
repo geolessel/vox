@@ -51,7 +51,15 @@ defmodule Vox.Builder.Collection do
   end
 
   def handle_call({:add, {path, :unprocessed}}, _, state) do
-    state = Map.put(state, :files, [%Vox.Builder.File{source_path: path} | state.files])
+    state =
+      Map.put(state, :files, [
+        %Vox.Builder.File{
+          root_template: Application.get_env(:vox, :src_dir) <> "/_root.html.eex",
+          source_path: path
+        }
+        | state.files
+      ])
+
     {:reply, state, state}
   end
 

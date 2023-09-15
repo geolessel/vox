@@ -15,7 +15,7 @@ defmodule Vox.Builder.FileCompiler do
     |> update_collector()
   end
 
-  defp extract_frontmatter(files) do
+  def extract_frontmatter(files) do
     Enum.reduce(files, [], fn %File{source_path: path} = file, acc ->
       contents = Elixir.File.read!(path)
 
@@ -30,7 +30,7 @@ defmodule Vox.Builder.FileCompiler do
           [
             %File{
               file
-              | frontmatter: frontmatter
+              | frontmatter: Enum.into(frontmatter, %{})
             }
             | acc
           ]
@@ -41,7 +41,7 @@ defmodule Vox.Builder.FileCompiler do
     end)
   end
 
-  defp compile_files(files) do
+  def compile_files(files) do
     Enum.reduce(files, [], fn %File{source_path: path} = file, acc ->
       case Path.extname(path) do
         # TODO: handle non-.eex evaled files
@@ -49,9 +49,10 @@ defmodule Vox.Builder.FileCompiler do
           compiled = EEx.compile_file(path)
 
           destination_path =
-            path
-            |> Path.rootname(".eex")
-            |> String.trim_leading(Application.get_env(:vox, :src_dir) <> "/")
+            "/" <>
+              (path
+               |> Path.rootname(".eex")
+               |> String.trim_leading(Application.get_env(:vox, :src_dir) <> "/"))
 
           [
             %File{
@@ -67,13 +68,15 @@ defmodule Vox.Builder.FileCompiler do
           acc
 
         _ext_of_passthrough ->
-          destination_path = String.trim_leading(path, Application.get_env(:vox, :src_dir) <> "/")
+          destination_path =
+            "/" <> String.trim_leading(path, Application.get_env(:vox, :src_dir) <> "/")
+
           [%File{file | destination_path: destination_path, type: :passthrough} | acc]
       end
     end)
   end
 
-  defp compute_collections(files) do
+  def compute_collections(files) do
     Enum.map(files, fn file ->
       collections =
         file.compiled
@@ -99,7 +102,7 @@ defmodule Vox.Builder.FileCompiler do
     EEx.eval_file(file_path, assigns: assigns)
   end
 
-  defp compute_bindings(files) do
+  def compute_bindings(files) do
     # for the __ENV__ later on
     assigns = Vox.Builder.Collection.assigns()
 
@@ -119,12 +122,12 @@ defmodule Vox.Builder.FileCompiler do
     end)
   end
 
-  defp update_collector(files) do
+  def update_collector(files) do
     Vox.Builder.Collection.update_files(files)
     files
   end
 
-  defp eval_files(files) do
+  def eval_files(files) do
     collection_assigns = Vox.Builder.Collection.assigns()
 
     Enum.map(files, fn
@@ -143,7 +146,7 @@ defmodule Vox.Builder.FileCompiler do
     end)
   end
 
-  defp insert_into_template(files) do
+  def insert_into_template(files) do
     Enum.map(files, fn
       %File{type: :passthrough} = file ->
         file
@@ -167,13 +170,13 @@ defmodule Vox.Builder.FileCompiler do
     end)
   end
 
-  defp put_nearest_template(files) when is_list(files) do
+  def put_nearest_template(files) when is_list(files) do
     Enum.map(files, &put_nearest_template/1)
   end
 
-  defp put_nearest_template(%File{type: :passthrough} = file), do: file
+  def put_nearest_template(%File{type: :passthrough} = file), do: file
 
-  defp put_nearest_template(%File{source_path: path, bindings: bindings} = file) do
+  def put_nearest_template(%File{source_path: path, bindings: bindings} = file) do
     template =
       case bindings[:template] do
         nil ->
@@ -187,7 +190,8 @@ defmodule Vox.Builder.FileCompiler do
     %{file | template: template}
   end
 
-  defp find_template_in_this_and_parent_directory(:error), do: "site/_template.html.eex"
+  defp find_template_in_this_and_parent_directory(:error),
+    do: Application.get_env(:vox, :src_dir) <> "/_template.html.eex"
 
   defp find_template_in_this_and_parent_directory({:ok, path}) do
     this_template = Path.join([path, "_template.html.eex"])

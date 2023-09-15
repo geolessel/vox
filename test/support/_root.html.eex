@@ -1,0 +1,5 @@
+<html>
+  <body id="root">
+    <%= @inner_content %>
+  </body>
+</html>
