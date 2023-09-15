@@ -6,6 +6,7 @@ defmodule Vox.Builder.FileWriter do
 
   alias Vox.Builder
 
+  @spec write(Builder.t()) :: :ok
   def write(%Builder{clean: clean} = _opts) do
     {:ok, output_dir} = Path.safe_relative(Application.get_env(:vox, :output_dir))
 
