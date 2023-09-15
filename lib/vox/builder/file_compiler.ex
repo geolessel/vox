@@ -102,7 +102,7 @@ defmodule Vox.Builder.FileCompiler do
     EEx.eval_file(file_path, assigns: assigns)
   end
 
-  defp compute_bindings(files) do
+  def compute_bindings(files) do
     # for the __ENV__ later on
     assigns = Vox.Builder.Collection.assigns()
 

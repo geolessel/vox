@@ -93,4 +93,20 @@ defmodule Vox.Builder.FileCompilerTest do
       assert you_there.collections == [:tag1, :tag2]
     end
   end
+
+  describe "compute_bindings/1" do
+    test "puts a file's bindings accessible by dot syntax" do
+      [source] =
+        [%Vox.Builder.File{source_path: "test/support/posts/01-hello-world.html.eex"}]
+        |> FileCompiler.compile_files()
+        |> FileCompiler.compute_collections()
+        |> FileCompiler.compute_bindings()
+
+      assert source.title == "Hello world"
+      assert source.date == ~D[2023-04-16]
+      assert source.author.name == "Geoffrey Lessel"
+      assert source.author.site == "https://builditwithphoenix.com"
+      assert source.collections == [:posts]
+    end
+  end
 end
