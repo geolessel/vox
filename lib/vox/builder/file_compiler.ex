@@ -4,6 +4,7 @@ defmodule Vox.Builder.FileCompiler do
   @spec compile() :: []
   def compile() do
     Vox.Builder.Collection.list_files()
+    |> extract_frontmatter()
     |> compile_files()
     |> compute_collections()
     |> compute_bindings()
@@ -12,6 +13,32 @@ defmodule Vox.Builder.FileCompiler do
     |> put_nearest_template()
     |> insert_into_template()
     |> update_collector()
+  end
+
+  defp extract_frontmatter(files) do
+    Enum.reduce(files, [], fn %File{source_path: path} = file, acc ->
+      contents = Elixir.File.read!(path)
+
+      Regex.scan(~r/^<%(.*)%>$/smfU, contents)
+      |> case do
+        [[frontmatter_as_a_string, _]] ->
+          {_, frontmatter} =
+            frontmatter_as_a_string
+            |> EEx.compile_string()
+            |> Code.eval_quoted()
+
+          [
+            %File{
+              file
+              | frontmatter: frontmatter
+            }
+            | acc
+          ]
+
+        [] = _no_frontmatter ->
+          [file | acc]
+      end
+    end)
   end
 
   defp compile_files(files) do

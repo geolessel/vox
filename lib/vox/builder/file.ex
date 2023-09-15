@@ -7,6 +7,7 @@ defmodule Vox.Builder.File do
             content: "",
             destination_path: "",
             final: "",
+            frontmatter: [],
             root_template: "#{@src_dir}/_root.html.eex",
             source_path: "",
             template: "",
