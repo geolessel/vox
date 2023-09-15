@@ -41,7 +41,7 @@ defmodule Vox.Builder.FileCompiler do
     end)
   end
 
-  defp compile_files(files) do
+  def compile_files(files) do
     Enum.reduce(files, [], fn %File{source_path: path} = file, acc ->
       case Path.extname(path) do
         # TODO: handle non-.eex evaled files
@@ -49,9 +49,10 @@ defmodule Vox.Builder.FileCompiler do
           compiled = EEx.compile_file(path)
 
           destination_path =
-            path
-            |> Path.rootname(".eex")
-            |> String.trim_leading(Application.get_env(:vox, :src_dir) <> "/")
+            "/" <>
+              (path
+               |> Path.rootname(".eex")
+               |> String.trim_leading(Application.get_env(:vox, :src_dir) <> "/"))
 
           [
             %File{
@@ -67,7 +68,9 @@ defmodule Vox.Builder.FileCompiler do
           acc
 
         _ext_of_passthrough ->
-          destination_path = String.trim_leading(path, Application.get_env(:vox, :src_dir) <> "/")
+          destination_path =
+            "/" <> String.trim_leading(path, Application.get_env(:vox, :src_dir) <> "/")
+
           [%File{file | destination_path: destination_path, type: :passthrough} | acc]
       end
     end)
