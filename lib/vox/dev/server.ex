@@ -1,6 +1,4 @@
 defmodule Vox.Dev.Server do
-  @output_dir Application.compile_env(:vox, :output_dir)
-
   use Plug.Router
   use Plug.Debugger
   use Plug.ErrorHandler
@@ -11,7 +9,7 @@ defmodule Vox.Dev.Server do
   plug(:dispatch)
 
   match "*glob" do
-    file_path = Path.join([@output_dir | glob])
+    file_path = Path.join([Application.get_env(:vox, :output_dir) | glob])
 
     handle_request(conn, file_path)
   end

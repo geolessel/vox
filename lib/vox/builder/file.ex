@@ -1,5 +1,4 @@
 defmodule Vox.Builder.File do
-  @src_dir Application.compile_env(:vox, :src_dir)
   @type t :: %__MODULE__{
           bindings: keyword(),
           collections: list(),
@@ -20,7 +19,7 @@ defmodule Vox.Builder.File do
             destination_path: "",
             final: "",
             frontmatter: %{},
-            root_template: "#{@src_dir}/_root.html.eex",
+            root_template: "",
             source_path: "",
             template: "",
             type: nil
