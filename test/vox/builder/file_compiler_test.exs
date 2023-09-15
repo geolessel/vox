@@ -149,4 +149,50 @@ defmodule Vox.Builder.FileCompilerTest do
       refute String.contains?(evaled.content, "<%= @")
     end
   end
+
+  describe "put_nearest_template/1" do
+    test "changes nothing for passthrough files" do
+      style = %Vox.Builder.File{type: :passthrough}
+      assert [style] == FileCompiler.put_nearest_template([style])
+    end
+
+    test "sets the template if specified in the bindings" do
+      [custom_template] =
+        [%Vox.Builder.File{source_path: "test/support/posts/work/03-awesome-thing.html.eex"}]
+        |> FileCompiler.compile_files()
+        |> FileCompiler.compute_collections()
+        |> FileCompiler.compute_bindings()
+        |> FileCompiler.update_collector()
+        |> FileCompiler.eval_files()
+        |> FileCompiler.put_nearest_template()
+
+      assert custom_template.template == "test/support/posts/work/_specified_template.html.eex"
+    end
+
+    test "finds the template in a shared subdirectory" do
+      [subdirectory_template] =
+        [%Vox.Builder.File{source_path: "test/support/posts/work/04-find-my-template.html.eex"}]
+        |> FileCompiler.compile_files()
+        |> FileCompiler.compute_collections()
+        |> FileCompiler.compute_bindings()
+        |> FileCompiler.update_collector()
+        |> FileCompiler.eval_files()
+        |> FileCompiler.put_nearest_template()
+
+      assert subdirectory_template.template == "test/support/posts/work/_template.html.eex"
+    end
+
+    test "finds the template in the root directory if no other subdirectory has a template" do
+      [root_template] =
+        [%Vox.Builder.File{source_path: "test/support/posts/confs/elixir/2023/05-vox.html.eex"}]
+        |> FileCompiler.compile_files()
+        |> FileCompiler.compute_collections()
+        |> FileCompiler.compute_bindings()
+        |> FileCompiler.update_collector()
+        |> FileCompiler.eval_files()
+        |> FileCompiler.put_nearest_template()
+
+      assert root_template.template == "test/support/_template.html.eex"
+    end
+  end
 end

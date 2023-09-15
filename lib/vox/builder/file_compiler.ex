@@ -170,13 +170,13 @@ defmodule Vox.Builder.FileCompiler do
     end)
   end
 
-  defp put_nearest_template(files) when is_list(files) do
+  def put_nearest_template(files) when is_list(files) do
     Enum.map(files, &put_nearest_template/1)
   end
 
-  defp put_nearest_template(%File{type: :passthrough} = file), do: file
+  def put_nearest_template(%File{type: :passthrough} = file), do: file
 
-  defp put_nearest_template(%File{source_path: path, bindings: bindings} = file) do
+  def put_nearest_template(%File{source_path: path, bindings: bindings} = file) do
     template =
       case bindings[:template] do
         nil ->
@@ -190,7 +190,8 @@ defmodule Vox.Builder.FileCompiler do
     %{file | template: template}
   end
 
-  defp find_template_in_this_and_parent_directory(:error), do: "site/_template.html.eex"
+  defp find_template_in_this_and_parent_directory(:error),
+    do: Application.get_env(:vox, :src_dir) <> "/_template.html.eex"
 
   defp find_template_in_this_and_parent_directory({:ok, path}) do
     this_template = Path.join([path, "_template.html.eex"])
