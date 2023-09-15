@@ -16,11 +16,12 @@ defmodule Vox.Dev.Server do
     handle_request(conn, file_path)
   end
 
-  defp handle_errors(conn, %{kind: _kind, reason: _reason, stack: _stack}) do
+  @impl Plug.ErrorHandler
+  def handle_errors(conn, %{kind: _kind, reason: _reason, stack: _stack}) do
     send_resp(conn, conn.status, "Something went wrong")
   end
 
-  defp handle_request(conn, file_path) do
+  def handle_request(conn, file_path) do
     mime_type = MIME.from_path(file_path)
 
     case File.read(file_path) do

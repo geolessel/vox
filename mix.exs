@@ -10,7 +10,8 @@ defmodule Vox.MixProject do
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      package: package()
+      package: package(),
+      dialyzer: [:ignore_warnings]
     ]
   end
 
@@ -28,7 +29,8 @@ defmodule Vox.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:plug_live_reload, "~> 0.1"},
       {:file_system, "~> 0.2"},
-      {:mime, "~> 2.0.5"}
+      {:mime, "~> 2.0.5"},
+      {:dialyxir, "~> 1.3", only: [:dev], runtime: false}
     ]
   end
 
