@@ -9,7 +9,7 @@ defmodule Vox.Builder.File do
           root_template: binary(),
           source_path: binary(),
           template: binary(),
-          compiled: any(),
+          compiled: Macro.t(),
           type: :evaled | :passthrough
         }
   defstruct bindings: [],
