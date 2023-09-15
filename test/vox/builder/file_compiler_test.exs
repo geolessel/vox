@@ -71,4 +71,26 @@ defmodule Vox.Builder.FileCompilerTest do
       assert source.type == :evaled
     end
   end
+
+  describe "compute_collections/1" do
+    setup do
+      files =
+        [
+          %Vox.Builder.File{source_path: "test/support/posts/01-hello-world.html.eex"},
+          %Vox.Builder.File{source_path: "test/support/posts/02-you-there?.html.eex"}
+        ]
+        |> FileCompiler.compile_files()
+
+      %{files: files}
+    end
+
+    test "each File knows about which collections it belongs to", %{files: files} do
+      [you_there, hello_world] = FileCompiler.compute_collections(files)
+
+      assert hello_world.destination_path == "/posts/01-hello-world.html"
+      assert hello_world.collections == [:posts]
+      assert you_there.destination_path == "/posts/02-you-there?.html"
+      assert you_there.collections == [:tag1, :tag2]
+    end
+  end
 end

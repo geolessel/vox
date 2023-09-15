@@ -5,6 +5,7 @@
     name: "Geoffrey Lessel",
     site: "https://builditwithphoenix.com"
   }
+  collections = :posts
 %>
 
 <h1>Hello, world</h1>

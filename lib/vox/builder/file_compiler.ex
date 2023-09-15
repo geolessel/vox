@@ -76,7 +76,7 @@ defmodule Vox.Builder.FileCompiler do
     end)
   end
 
-  defp compute_collections(files) do
+  def compute_collections(files) do
     Enum.map(files, fn file ->
       collections =
         file.compiled
