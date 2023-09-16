@@ -13,11 +13,10 @@ defmodule Mix.Tasks.Vox.New do
   """
 
   @template_string_to_replace "APP"
+  @version Mix.Project.config()[:version]
 
   use Mix.Task
   use VoxNew.Templater
-
-  @version Mix.Project.config()[:version]
 
   alias VoxNew.Project
 
