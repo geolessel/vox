@@ -3,11 +3,6 @@ defmodule Vox.Builder.FileCompilerTest do
 
   alias Vox.Builder.FileCompiler
 
-  setup_all do
-    Application.put_env(:vox, :src_dir, "test/support")
-    Application.put_env(:vox, :output_dir, "_html")
-  end
-
   describe "extract_frontmatter/1" do
     test "extracts front matter when there is some" do
       files = [%Vox.Builder.File{source_path: "test/support/posts/01-hello-world.html.eex"}]

@@ -7,7 +7,7 @@ defmodule Vox.Builder.FileFinder do
   end
 
   @spec find(binary()) :: [binary]
-  def find(root_dir) do
+  defp find(root_dir) do
     [root_dir, "**", "*"]
     |> Path.join()
     |> Path.wildcard()
