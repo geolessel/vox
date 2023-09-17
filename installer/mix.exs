@@ -43,7 +43,7 @@ defmodule VoxNew.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ex_doc, "~> 0.30.6"}
+      {:ex_doc, "~> 0.30.6", only: :dev, runtime: false}
     ]
   end
 

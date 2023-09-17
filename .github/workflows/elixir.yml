@@ -38,4 +38,5 @@ jobs:
     - name: Run installer tests
       run: |
         cd installer
+        mix deps.get
         mix test

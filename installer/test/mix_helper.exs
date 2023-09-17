@@ -8,9 +8,9 @@ defmodule MixHelper do
   end
 
   defp random_string(len) do
-    len 
-    |> :crypto.strong_rand_bytes() 
-    |> Base.encode64() 
+    len
+    |> :crypto.strong_rand_bytes()
+    |> Base.encode64()
     |> binary_part(0, len)
   end
 
