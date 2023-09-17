@@ -8,7 +8,7 @@ defmodule VoxNew.MixProject do
     [
       app: :vox_new,
       version: @version,
-      elixir: "~> 1.15",
+      elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
       source_url: @source_url,
       package: package(),
@@ -43,7 +43,7 @@ defmodule VoxNew.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ex_doc, "~> 0.30.6"}
+      {:ex_doc, "~> 0.30.6", only: :dev, runtime: false}
     ]
   end
 

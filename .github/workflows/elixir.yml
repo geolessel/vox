@@ -35,3 +35,8 @@ jobs:
       run: mix deps.get
     - name: Run tests
       run: mix test
+    - name: Run installer tests
+      run: |
+        cd installer
+        mix deps.get
+        mix test

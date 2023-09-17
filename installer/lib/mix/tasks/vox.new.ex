@@ -8,9 +8,12 @@ defmodule Mix.Tasks.Vox.New do
   ## Command line options
 
       * `--esbuild` - include a simple esbuild system for asset compliation
+
+      * `-v`, `--version` - prints the Vox installer version
   """
 
   @template_string_to_replace "APP"
+  @version Mix.Project.config()[:version]
 
   use Mix.Task
   use VoxNew.Templater
@@ -32,20 +35,28 @@ defmodule Mix.Tasks.Vox.New do
   template("test/#{@template_string_to_replace}_test.exs")
 
   @impl Mix.Task
+  def run([version]) when version in ~w(-v --version) do
+    Mix.shell().info("Vox installer v#{@version}")
+  end
+
   def run(argv) do
-    {flags, [path | _rest]} = OptionParser.parse!(argv, strict: [esbuild: :boolean])
+    case OptionParser.parse!(argv, strict: [esbuild: :boolean]) do
+      {_, []} ->
+        Mix.Tasks.Help.run(["vox.new"])
 
-    # [TODO] I think these could result in incorrect formatting
-    module_name = Macro.camelize(path)
-    app_name = Macro.underscore(path)
-    esbuild = Keyword.get(flags, :esbuild, false)
+      {flags, [path | _rest]} ->
+        # [TODO] I think these could result in incorrect formatting
+        module_name = Macro.camelize(path)
+        app_name = Macro.underscore(path)
+        esbuild = Keyword.get(flags, :esbuild, false)
 
-    generate(%Project{
-      app_name: app_name,
-      base_path: path,
-      esbuild: esbuild,
-      module_name: module_name
-    })
+        generate(%Project{
+          app_name: app_name,
+          base_path: path,
+          esbuild: esbuild,
+          module_name: module_name
+        })
+    end
   end
 
   defp generate(project) do
