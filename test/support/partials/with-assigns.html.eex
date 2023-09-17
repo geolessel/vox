@@ -1,0 +1,3 @@
+<div id="with-assigns">
+  This should render an assign: <%= @title %>
+</div>
