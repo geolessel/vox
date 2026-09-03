@@ -5,6 +5,11 @@ defmodule Mix.Tasks.Vox.New do
 
   Scaffolds a simple website using Vox.
 
+  The app and module names are derived from the name of the target
+  directory (the last segment of the expanded path), so `mix vox.new
+  nested/dir/blog` and `mix vox.new blog` both produce an app named
+  `blog`.
+
   ## Command line options
 
       * `--esbuild` - include a simple esbuild system for asset compliation
@@ -45,9 +50,9 @@ defmodule Mix.Tasks.Vox.New do
         Mix.Tasks.Help.run(["vox.new"])
 
       {flags, [path | _rest]} ->
-        # [TODO] I think these could result in incorrect formatting
-        module_name = Macro.camelize(path)
-        app_name = Macro.underscore(path)
+        base_name = path |> Path.expand() |> Path.basename()
+        app_name = Macro.underscore(base_name)
+        module_name = Macro.camelize(base_name)
         esbuild = Keyword.get(flags, :esbuild, false)
 
         generate(%Project{
