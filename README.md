@@ -73,6 +73,7 @@ Render your further child template with
 
 For now, **you must have a `src_dir/_template.html.eex` file defined**.
 The compiler will use that file as the default template.
+Template files are never built into their own page; they are read directly from disk and wrapped around the pages that use them (see "Private files" below).
 There are two other ways you can set the template for a file.
 
 1. Bind `template` in the file's bindings. This is a path relative to the file it is bound in.
@@ -97,6 +98,13 @@ Any file with an extension other than `.eex` or `.html` will not be processed.
 Instead, they will be copied over in the same directory structure and file name as it is in the source directory.
 
 For example, if there was an image located on your filesystem at `src_dir/images/logo.png`, it will be available in the generated site structure are `dest_dir/images/logo.png`.
+
+### Private files
+
+Files whose name starts with `_` (like `_root.html.eex` and `_template.html.eex`) and any file inside a directory named `partials` are never compiled or copied into the output.
+Templates and partials are read directly from disk by path when they're needed, so they don't need to be built as pages themselves.
+This is how templates and partials stay out of your built site.
+`Vox.partial/2` accepts any path, so keep partial files inside a `partials` directory (or give them a `_` prefix) or they will be built as pages.
 
 ### File metadata (also known as front matter or bindings)
 
