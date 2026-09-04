@@ -67,6 +67,51 @@ defmodule VoxNewTest do
     end)
   end
 
+  test "new with a nested relative path" do
+    in_tmp("new with a nested relative path", fn ->
+      Mix.Tasks.Vox.New.run(["nested/dir/blog"])
+
+      assert_file("nested/dir/blog/mix.exs", fn file ->
+        assert {:ok, _} = Code.string_to_quoted(file)
+        assert file =~ "defmodule Blog.MixProject"
+        assert file =~ "app: :blog"
+      end)
+
+      assert_file("nested/dir/blog/lib/blog.ex")
+      assert_file("nested/dir/blog/test/blog_test.exs")
+    end)
+  end
+
+  test "new with an absolute path" do
+    in_tmp("new with an absolute path", fn ->
+      path = Path.expand("blog")
+      Mix.Tasks.Vox.New.run([path])
+
+      assert_file(Path.join(path, "mix.exs"), fn file ->
+        assert {:ok, _} = Code.string_to_quoted(file)
+        assert file =~ "defmodule Blog.MixProject"
+        assert file =~ "app: :blog"
+      end)
+
+      assert_file(Path.join(path, "lib/blog.ex"))
+      assert_file(Path.join(path, "test/blog_test.exs"))
+    end)
+  end
+
+  test "new preserves acronym casing in the module name" do
+    in_tmp("new preserves acronym casing in the module name", fn ->
+      Mix.Tasks.Vox.New.run(["HTTPServer"])
+
+      assert_file("HTTPServer/mix.exs", fn file ->
+        assert {:ok, _} = Code.string_to_quoted(file)
+        assert file =~ "defmodule HTTPServer.MixProject"
+        assert file =~ "app: :http_server"
+      end)
+
+      assert_file("HTTPServer/lib/http_server.ex")
+    end)
+  end
+
   def shared_file_assertions() do
     assert_file("#{@app_name}/README.md")
     assert_file("#{@app_name}/lib/#{@app_name}.ex")

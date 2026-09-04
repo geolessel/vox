@@ -13,6 +13,7 @@ mix vox.new blog
 ```
 
 This will generate a simple scaffolded site that you can customize and tweak as you see fit.
+You can also pass a path (e.g. `mix vox.new nested/dir/blog`); the app name comes from the name of the target directory.
 
 There is also an example blog built with Vox that attempts to take advantage of all the features of Vox as they are built.
 You can look at the source code for that (and clone it and build it yourself) at [geolessel/vox-example](https://github.com/geolessel/vox-example).
